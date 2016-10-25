@@ -1,0 +1,152 @@
+
+
+/* GUI */
+	#game-screen-footer {
+		position: fixed;
+		/*background: white;*/
+		background:transparent;
+		width: 100%;
+		min-height: 150px;
+		bottom: 0px;
+	}
+	#game-screen-footer  .row {
+		margin-right: 10px;
+		margin-left: 10px;
+	}
+	.box {
+		padding: 0px;
+	}
+	.gui-box {
+		background:linear-gradient(27deg,#151515 5px,transparent 5px) 0 5px,linear-gradient(207deg,#151515 5px,transparent 5px) 10px 0,linear-gradient(27deg,#222 5px,transparent 5px) 0 10px,linear-gradient(207deg,#222 5px,transparent 5px) 10px 5px,linear-gradient(90deg,#1b1b1b 10px,transparent 10px),linear-gradient(#1d1d1d 25%,#1a1a1a 25%,#1a1a1a 50%,transparent 50%,transparent 75%,#242424 75%,#242424);
+		background-color:#131313;
+		background-size:20px 20px;
+
+		height: 140px;
+		margin:4px;
+		padding: 8px;
+		border: solid 4px black;
+		border-radius: 15px;
+		color: white;
+	}
+
+	/* this requires a ra-3x icon! */
+	.gui-button {
+		background: none;
+		padding-top: 20px;
+		cursor: pointer;
+		line-height: 80px;
+		margin: 0 6px;
+		text-decoration: none;
+	}
+	.gui-button:hover {
+		text-decoration: none;	
+	}
+
+	.yinyang{background:radial-gradient(circle at 50% 59%,#000000 3%,#FFFFFF 4%,#FFFFFF 11%,rgba(54,78,39,0) 12%,rgba(54,78,39,0)) 50px 0,radial-gradient(circle at 50% 41%,#FFFFFF 3%,#000000 4%,#000000 11%,rgba(210,202,171,0) 12%,rgba(210,202,171,0)) 50px 0,radial-gradient(circle at 50% 59%,#000000 3%,#FFFFFF 4%,#FFFFFF 11%,rgba(54,78,39,0) 12%,rgba(54,78,39,0)) 0 50px,radial-gradient(circle at 50% 41%,#FFFFFF 3%,#000000 4%,#000000 11%,rgba(210,202,171,0) 12%,rgba(210,202,171,0)) 0 50px,radial-gradient(circle at 100% 50%,#000000 16%,rgba(210,202,171,0) 17%),radial-gradient(circle at 0 50%,#FFFFFF 16%,rgba(54,78,39,0) 17%),radial-gradient(circle at 100% 50%,#000000 16%,rgba(210,202,171,0) 17%) 50px 50px,radial-gradient(circle at 0 50%,#FFFFFF 16%,rgba(54,78,39,0) 17%) 50px 50px;background-color:#84588f;background-size:100px 100px}
+
+	.gui{
+		background:linear-gradient(27deg,#5B3413 5px,transparent 5px) 0 5px,linear-gradient(207deg,#5B3413 5px,transparent 5px) 10px 0,linear-gradient(27deg,#795231 5px,transparent 5px) 0 10px,linear-gradient(207deg,#795231 5px,transparent 5px) 10px 5px,linear-gradient(90deg,#512e11 10px,transparent 10px),linear-gradient(#6F4827 25%,#653E1d 25%,#653E1d 50%,transparent 50%,transparent 75%,#512A09 75%,#512A09);
+		background-color:#472000;
+		background-size:20px 20px
+	}
+
+	.hidden {
+		display: none;
+	}
+
+	#game-info {
+		position: absolute;
+		top: 10px;
+		width: 100%;
+		text-align: center;
+		z-index: 100;
+		display:block;
+	}
+	#game-info a, #game-info .button { color: #f00; font-weight: bold; text-decoration: underline; cursor: pointer }
+	.bigtext {
+		font-size: 20px;
+	}
+
+/* PLAYERS TAB */
+	#gui-players {
+		margin: 0px;
+		padding: 0px;
+	}
+	#gui-players .gui-player {
+		font-size: 18px;
+		list-style-type: none;
+	}
+	#gui-turn-mine {
+		display: none;
+	}
+	#btn-end-turn {
+		color: white;
+	}
+	#btn-end-turn:hover {
+		color: gold;
+	}
+
+/* UNITS TAB */
+	
+
+/* MINIMAP TAB */
+	
+
+
+
+/* CHAT TAB */
+
+	/*#game-chat {
+		position: absolute;
+		left: 0;
+		bottom: 0;
+		background-color: rgba(0,0,0, 0.75);
+		width: 400px;
+		height: 300px;
+		color: white;
+	}
+	#game-chat-list {
+		padding: 0;
+		margin: 5px;	
+	}
+	#game-chat-list li {
+		list-style: none;
+	}
+	#game-panel {
+		height: 100px;
+	}*/
+
+
+
+/* ROOMS GUI */
+	/*#game-layout {
+		overflow: hidden;
+	}
+	#game-panel {
+		height: 100px;
+	}*/
+	/*#game-screen-body {
+		position: relative;
+		min-height: 500px;
+	}*/
+
+	#debug {
+		overflow-y: scroll;
+		height: 200px;
+	}
+	#connector-response {
+		text-align: left;
+	}
+	#room-map {
+		text-align: center;
+	}
+
+	.map-icon {
+		width: 35px;
+		height: 35px;	
+	}
+
+	.map-picture {
+		width: 128px;
+		height: 128px;
+	}

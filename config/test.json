@@ -1,0 +1,38 @@
+{
+	"modules": {
+		"Server": "core/server/wsserver",
+		"Auth": "core/auth/absauth",
+
+		"Game": "core/room/container",
+		"Admin": "game/admin"
+	},
+
+	"Test": {
+		"tests": [
+			"move_areas", "move_guard", "move_upgrade", "move_building"
+		]
+	},
+
+	"Server": {
+		"name":	"test server",
+		"port":	9000,
+		"host":	"0.0.0.0",
+		"buffer": 2048
+	},
+
+	"Admin": {
+		"backup_loc":				"",
+		"fail_sql_loc":				""
+	},
+
+	"Game": {
+		"room_file":				"game/room",
+		"player_file":				"game/player"
+	},
+
+	"Auth": {
+		"deny": "all",
+		"accept": ["test0", "test1", "test2", "admin"],
+		"admins": ["admin"]
+	}
+}

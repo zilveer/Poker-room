@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+        <title>{% block title %}Welcome!{% endblock %}</title>
+
+        {% block stylesheets %}{% endblock %}
+        <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}" />
+        <link rel="stylesheet" href="{{ asset('assets/css/game.css') }}" />
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+    </head>
+    <body>
+        {% block body %}{% endblock %}
+        <script src="{{ asset('assets/js/jquery.min.js') }}"></script>
+        <script src="{{ asset('assets/js/tether.min.js') }}"></script>
+        <script src="{{ asset('assets/js/bootstrap.min.js') }}" ></script>
+        {% block javascripts %}{% endblock %}
+    </body>
+</html>

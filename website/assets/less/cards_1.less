@@ -1,0 +1,210 @@
+
+
+.card {
+	position: relative;
+	display: inline-block;
+	width: @card-width;
+	height: @card-height;
+	font: @font-size 'Trebuchet MS';
+	
+	margin: @gutter;
+	border: @card-border;
+	border-radius: @card-padding;
+	background: @card-background;
+	
+	&:before,
+	&:after {
+		content: attr(value);
+		position: absolute;
+		width: 12px;
+		text-align: center;
+		letter-spacing: -2px;
+	}
+	
+	&:before {
+		top: @card-padding;
+		left: @card-padding;
+	}
+	
+	&:after {
+		bottom: @card-padding;
+		right: @card-padding;
+		transform: rotate(180deg)
+	}
+	
+	&--heart {
+		color: @card-color-red;
+		
+		&:before,
+		&:after {
+			content: attr(value) ' ♥';
+		}
+
+		&[value="J"] .card__inner {
+			background: url("faces/face-jack-heart.png");
+			background-size: 100% 100%;
+		}
+
+		&[value="Q"] .card__inner {
+			background: url("faces/face-queen-heart.png");
+			background-size: 100% 100%;
+		}
+
+		&[value="K"] .card__inner {
+			background: url("faces/face-king-heart.png");
+			background-size: 100% 100%;
+		}
+	}
+	
+	&--spade {
+		color: @card-color-black;
+		
+		&:before,
+		&:after {
+			content: attr(value) ' ♠';
+		}
+
+		&[value="J"] .card__inner {
+			background: url("faces/face-jack-spade.png");
+			background-size: 100% 100%;
+		}
+
+		&[value="Q"] .card__inner {
+			background: url("faces/face-queen-spade.png");
+			background-size: 100% 100%;
+		}
+
+		&[value="K"] .card__inner {
+			background: url("faces/face-king-spade.png");
+			background-size: 100% 100%;
+		}
+	}
+
+	&--diamond {
+		color: @card-color-red;
+		
+		&:before,
+		&:after {
+			content: attr(value) ' ♦';
+		}
+
+
+		&[value="J"] .card__inner {
+			background: url("faces/face-jack-diamond.png");
+			background-size: 100% 100%;
+		}
+
+		&[value="Q"] .card__inner {
+			background: url("faces/face-queen-diamond.png");
+			background-size: 100% 100%;
+		}
+
+		&[value="K"] .card__inner {
+			background: url("faces/face-king-diamond.png");
+			background-size: 100% 100%;
+		}
+	}
+
+	&--club {
+		color: @card-color-black;
+		
+		&:before,
+		&:after {
+			content: attr(value) ' ♣';
+		}
+
+		&[value="J"] .card__inner {
+			background: url("faces/face-jack-club.png");
+			background-size: 100% 100%;
+		}
+
+		&[value="Q"] .card__inner {
+			background: url("faces/face-queen-club.png");
+			background-size: 100% 100%;
+		}
+
+		&[value="K"] .card__inner {
+			background: url("faces/face-king-club.png");
+			background-size: 100% 100%;
+		}
+	}
+}
+
+.card__inner {
+	box-sizing: border-box;
+	position: absolute;
+	display: flex;
+	justify-content: space-between;
+	top: 6 * @card-padding;
+	left: 6 * @card-padding;
+	right: 6 * @card-padding;
+	bottom: 6 * @card-padding;
+	
+	&--centered {
+		justify-content: center;
+	}
+}
+
+.card__column {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	
+	&--centered {
+		justify-content: center;
+	}
+}
+
+.card__symbol {
+	display: inline-block;
+	height: @card-symbol-size;
+	text-align: center;
+	
+	&:before {
+		font-size: 4 * @font-size;
+		line-height: @card-symbol-size;
+	}
+	
+	.card--heart &:before {
+		content: '♥';
+	}
+	
+	.card--spade &:before {
+		content: '♠';
+	}
+	
+	.card--diamond &:before {
+		content: '♦';
+	}
+
+	.card--club &:before {
+		content: '♣';
+	}
+
+	&--rotated,
+	&:last-of-type {
+		transform: rotate(180deg);
+	}
+	
+	&:first-of-type {
+		transform: rotate(0);
+	}
+	
+	&--big {
+		flex-basis: 0.25 * @card-height;
+	}
+	
+	&--huge {
+		flex-basis: 0.45 * @card-height;
+	}
+
+	&--ace {
+		transform: scale(1.5) !important;
+	}
+}
+
+.title {
+	font: 18px 'Trebuchet MS';
+	color: #444;
+	text-align: center;
+}

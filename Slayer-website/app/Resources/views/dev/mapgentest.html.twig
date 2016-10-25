@@ -1,0 +1,94 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Map Generator test
+{% endblock %}
+
+{% block body %}
+    <div id="wrapper">
+        <div id="container" class="container">
+            <div>
+                <input type="text" id="generator" placeholder="Host" value="test">
+                <button id='refresh' onclick="conn()">Connect</button>
+                <div id="conn"></div>
+            </div>
+            <canvas id="hexmap" width="1000" height="700"></canvas>
+        </div>
+    </div>
+{% endblock %}
+
+{% block stylesheets %}
+    <style type="text/css"> canvas { border:1px solid black; display:block; margin:0 auto; } </style>
+{% endblock %}
+
+
+{% block javascripts %}
+<script type="text/javascript" src="{{ asset('assets/js/mapgentest/hexagons2d.js') }}"></script>
+<script type="text/javascript">
+var socket;
+var bufferlength = 2048; var _room_id = 0;
+var _handler = function(){};
+function wait(handler) { _handler = handler;}
+function getByteSize(s) {
+    return encodeURIComponent('<q></q>' + s).length;
+}
+
+function connect() {
+    $('#conn').html("<span style='color:blue;'>Online!</span>");    
+
+    socket.send('{"group":"Auth","method":"validate","params":{"username": "mapgentest","login_token": "-"}}');
+    wait(function(resp){
+        console.log(resp);
+        socket.send('{"group":"Game","method":"create_room","params":{"map_type":"'+$('#generator').val()+'"}}');
+        wait(function(resp){
+            console.log(resp);
+            wait(function(resp){
+            console.log(resp);
+            _room_id = resp.params.room_id;
+                socket.send('{"group":"Game","method":"join_room","params":{"room_id":"'+_room_id+'"}}');
+                wait(function(resp){
+                    console.log(resp);
+                    socket.send('{"group":"Game","method":"start_room","params":{"room_id":"'+_room_id+'"}}');
+                    wait(function(resp){
+                        console.log("Drawing...");
+                        draw_hexes(resp);
+                        _handler = function(){};                            
+                    });
+                });
+            });
+        });
+    });
+}
+
+function receive(e) {
+    resp = jQuery.parseJSON(e.data);
+    if(resp.method != 'error')
+        _handler(resp);
+    else 
+        console.error(resp);
+}
+
+function conn() {
+    $('#conn').html("Connecting...");
+    var serv = "ws://127.0.0.1:8000";
+    socket = new WebSocket(serv);
+    socket.onopen = connect;
+    socket.onclose = disconnect;
+    socket.onerror = disconnect;
+    socket.onmessage = receive;
+}
+
+
+
+function disconnect() {
+    $('#conn').html("<span style='color:red;'>Offline.</span>");
+}
+
+var cookielength = getByteSize(document.cookie);
+if(cookielength > bufferlength) {
+    alert("Warning! The buffer length of the server is "+bufferlength+"B, while your cookie length is "+cookielength+'B. Increment the server buffer length before connecting!');
+} else {
+    conn();
+}
+</script>
+{% endblock %}

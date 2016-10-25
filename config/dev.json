@@ -1,0 +1,80 @@
+{
+	"modules": {
+		"Server": "core/server/wsserver",
+		"Auth": "core/auth/absauth",
+
+		"Game": "core/room/container",
+		"TurnHandler": "core/turns/turnhandler",
+
+		"Poker": "game/game",
+		"Admin": "game/admin"
+	},
+
+	"Game": {
+		"room_file":				"game/room",
+		"player_file":				"game/player"
+	},
+
+	"Admin": {
+		"backup_loc":				"",
+		"fail_sql_loc":				""
+	},
+
+	"Auth": {
+		"deny":						"all",
+		"accept": [
+			"oboforty", "rajmund", "mapgentest",
+			"tajter", "davesoliders", "davesalud",
+			"szabesz", "szabeszrange", "szabeszeg"
+		],
+		"admins": [
+			"oboforty"
+		]
+	},
+
+	"Server": {
+		"name":						"Official Slayer-Atlantis (node.js)",
+		"port":						8000,
+		"host":						"0.0.0.0",
+		"buffer":					2048
+	},
+
+	"TurnHandler": {
+		"timeout": 120,
+		"timeout_tries": 0
+	},
+
+	"Poker": {
+		"currencies": ["rws", "usd", "eur", "btc", "cigar"],
+		"room_options": [
+			{
+				"name": "Texas Hold'em",
+				"blind": 10,
+				"seats": 6,
+				"currency": "rws",
+				"number": 3
+			},
+			{
+				"name": "Texas Hold'em",
+				"blind": 50,
+				"seats": 6,
+				"currency": "rws",
+				"number": 2
+			},
+			{
+				"name": "Texas Hold'em",
+				"blind": 100,
+				"seats": 10,
+				"currency": "rws",
+				"number": 1
+			},
+			{
+				"name": "Texas Hold'em",
+				"blind": 500,
+				"seats": 10,
+				"currency": "rws",
+				"number": 1
+			}
+		]
+	}
+}

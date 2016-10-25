@@ -1,0 +1,85 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Slay
+{% endblock %}
+
+{% block body %}
+<div>
+    <div id="tab-connect" class="game-tab container-fluid">
+        {{ include('game/gui/connect.html') }}
+    </div>
+
+    <div id="tab-game" class="game-tab container-fluid">
+        {{ include('game/gui/game.html') }}
+    </div>
+
+    <div id="tab-load" class="game-tab container-fluid">
+        {{ include('game/gui/loader.html') }}
+    </div>
+
+    <div id="tab-rooms" class="game-tab container-fluid">
+       {{ source('game/gui/rooms.html') }}
+    </div>
+</div>
+{% endblock %}
+
+
+{% block stylesheets %}
+{% endblock %}
+
+{% block javascripts %}
+{{ include('game/include-dev.html.twig') }}
+<script>
+    //@todo: place this into slayer-client class
+    var conf = {
+        Auth: {
+            username: "oboforty",
+            token: null,
+            role: null
+        },
+        Room: {
+            //room_id: 1,
+            attributes: {
+                'name': {
+                    list: true,
+                    search: true,
+                    filter: true,
+                },
+                'map': {
+                    list: true,
+                    search: true,
+                    filter: true,
+                },
+                'mode': {
+                    list: true,
+                    search: true,
+                    filter: true,
+                },
+                'size': {
+                    list: true,
+                    search: true,
+                    filter: true,
+                }
+            }
+        },
+        Client: {
+            address: '127.0.0.1:8000'
+        },
+        Game: {
+            Graphics: {
+                client: '3D',
+                url_base: ''
+            }
+        }
+    };
+
+    GUI.init(conf.GUI);
+    Client.init(conf.Client);
+    Auth.init(conf.Auth);
+    Room.init(conf.Room);
+    Game.init(conf.Game);
+
+    Game.start();
+</script>
+{% endblock %}
