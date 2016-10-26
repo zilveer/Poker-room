@@ -1,5 +1,6 @@
 
 var Player = require('./player');
+var Poker = require('./poker');
 
 var Room = function(id, room_info) {
     this.room_id = id;
@@ -11,20 +12,40 @@ var Room = function(id, room_info) {
     this.sblind = this.blind / 2;
     this.type = 'Sit & go';
     this.currency = room_info.currency;
+    this.cards = null;
+};
 
-    this.get_info = function() {
-        return {
-            room_id : this.room_id, name : this.name,
-            seats : this.seats, type : this.type, players : this.players,
-            turn : this.turn.get_info(),
-            blind : this.blind, sblind: this.sblind, currency: this.currency,
-            avg_pot : 0,
-        };
-    };
+Room.prototype.fetchBestHand = function() {
+    // @todo: implement splitting !
+    // @todo: it would be better first to make the client and start calling methods
+    var bestPlayer = null;
+    var bestHandType = null;
 
-    this.get_game_info = function() {
-        return this.get_info();
+    for(var player in this.players) {
+        var hand = this.cards.merge(this.player.hand);
+
+        var handType = hand.getType();
+        if(handType > bestHandType) {
+            bestHandType = handType;
+            bestPlayer = player;
+        }
+    }
+
+    return [bestHandType, bestPlayer];
+};
+
+Room.prototype.get_info = function() {
+    return {
+        room_id : this.room_id, name : this.name,
+        seats : this.seats, type : this.type, players : this.players,
+        turn : this.turn.get_info(),
+        blind : this.blind, sblind: this.sblind, currency: this.currency,
+        avg_pot : 0,
     };
+};
+
+Room.prototype.get_game_info = function() {
+    return this.get_info();
 };
 
 Room.prototype.sendToAll = function(method, params) {
