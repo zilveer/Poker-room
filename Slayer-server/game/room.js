@@ -1,20 +1,43 @@
 
 var Player = require('./player');
 var Poker = require('./poker');
+var Pot = require('./pot');
 
 var Room = function(id, room_info) {
     this.room_id = id;
     this.name = room_info.name ? room_info.name : 'Game ' + id;
     this.players = {};
     this.turn = TurnHandler.create_handler(this.turn_timeout, this.players);
+    this.pot = new Pot(this.players);
+    this.cards = new Poker.Hand([]);
     this.seats = room_info.seats ? room_info.seats : 1;
     this.blind = room_info.blind;
     this.sblind = this.blind / 2;
     this.type = 'Sit & go';
     this.currency = room_info.currency;
-    this.cards = null;
 };
 
+//@todo: eloszor megir, aztan refactor code!
+//@todo: return this.error(...)
+Room.prototype.call_action = function(user_id, params) {
+    var player = this.getPlayer(user_id);
+    if(!player) return;
+
+    //@todo: implement currency handling first
+};
+
+Room.prototype.call_chat_message = function(user_id, params) {
+
+};
+
+Room.prototype.getPlayer = function(user_id) {
+    var arr = this.players.filter(function(v) {
+        return v.user_id === user_id;
+    });
+    return arr.length > 0 ? arr : false;
+};
+
+// @todo: unused and shouldn't be used
 Room.prototype.fetchBestHand = function() {
     // @todo: implement splitting !
     // @todo: it would be better first to make the client and start calling methods
@@ -116,6 +139,22 @@ Room.prototype.call_join_room = function(user_id, params) {
         method : 'join_room_notify',
         params : this.players[user_id]
     });
+};
+
+Room.prototype.call_leave_room = function(user_id, params) {
+
+};
+
+Room.prototype.call_leave_seat = function(user_id, params) {
+
+};
+
+Room.prototype.call_take_seat = function(user_id, params) {
+
+};
+
+Room.prototype.call_leave_seat = function(user_id, params) {
+
 };
 
 module.exports = Room;

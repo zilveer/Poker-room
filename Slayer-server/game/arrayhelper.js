@@ -1,5 +1,8 @@
 
 module.exports = {
+	/**
+	 * Generate inverted frequency array from array of objects
+	 */
 	frequencies: function(cont, attr) {
 		var type_ifreqs = cont.reduce((type, item) => {
 			type[item[attr]] = !type[item[attr]] ? 1 : type[item[attr]]+1;
@@ -21,6 +24,10 @@ module.exports = {
 		return type_freqs;
 	},
 
+	/**
+	 * Get longest series in list of ranks
+	 * @todo: this is partly poker logic
+	 */
 	max_series: function(cont) {
 		var arr = cont.reduce((rank, item) => {
 			rank.push(parseInt(item.rank))
