@@ -1,5 +1,6 @@
 var fs = require('fs');
 var Poker = require('../Slayer-server/game/poker')
+var TH = require('./testhelper');
 
 module.exports = {
 	run: function() {
@@ -21,12 +22,7 @@ module.exports = {
 			var actual = hand.fetchType();
 
 			if(expected != actual) {
-				console.log('FAIL');
-				console.log(' * hand: ', handContent);
-				console.log(' * expected: ', expected);
-				console.log(' * actual: ', actual);
-
-				break;
+				return TH.fail(handContent, expected, actual);
 			}
 		}
 

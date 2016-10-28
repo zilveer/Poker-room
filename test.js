@@ -1,5 +1,23 @@
 
+var tests = [
+// PASSES:
+	//'hands',
+	//'bidding',
 
-var test = require("./tests/hands")
+// TO IMPLEMENT:
+	'turns',
+	//'currencies',
+	//'rating',
 
-test.run()
+// OPTIONAL:
+	//'random',
+	//'server_check',
+	//'chat',
+	//'rooms',
+	//'seats',
+];
+
+for(var testName of tests) {
+	var test = require("./tests/" + testName)
+	test.run()	
+}
