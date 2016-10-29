@@ -13,7 +13,9 @@ module.exports = function(players) {
 		winner.chips += this.sumMainPot();
 
 		//if(this.hasAllin || winner.allin) {
-			for(var player of this.players) {
+			for(var p in this.players) {
+				var player = this.players[p];
+
 				var win = Math.min(player.chipsInSidePot, winner.chipsInSidePot);
 
 				winner.chips += win;
@@ -29,27 +31,30 @@ module.exports = function(players) {
 
 	// Count main pot:
 	this.sumMainPot = function() {
-		return this.players.reduce((sum, player) => {
-			return sum + player.chipsInMainPot;
-		}, 0);
+		var sum = 0;
+		for(var p in this.players) {
+			sum += this.players[p].chipsInMainPot;
+		}
+		return sum;
 	},
 
 	this.resetPot = function() {
-		for(var player of this.players) {
-			player.reset();
+		for(var p in this.players) {
+			this.players[p].reset();
 		}
 	},
 
 	this.fetchPots = function() {
-		// Count main pot:
-		var remaining = this.players.reduce((cont, player) => {
-			cont.push(player.chipsInPot)
-			return cont;
-		}, []);
+		var remaining = [];
+		for(var p in this.players) {
+			remaining.push(this.players[p].chipsInPot);
+		}
 
 		var minPot = 0, i = 0;
 		do {
-			minPot = this._getMinPot(remaining);
+			minPot = remaining.reduce((minPot, chips) => {
+				return (chips < minPot && chips != 0) ? chips : minPot;
+			}, Infinity);
 
 			var sumSidePot = 0;
 			for(var p in remaining) {
@@ -65,19 +70,6 @@ module.exports = function(players) {
 
 			i++;
 		} while(minPot != sumSidePot && sumSidePot != 0)
-	}
-
-	this._getMinPot = function(pot) {
-		return pot.reduce((minPot, chips) => {
-			return (chips < minPot && chips != 0) ? chips : minPot;
-		}, Infinity);
-	}
-
-	// @UNUSED
-	this._getSumPot = function(pot) {
-		return pot.reduce((sum, chips) => {
-			return sum + parseInt(chips);
-		}, 0);
 	}
 
 	// Add chips to pot from player

@@ -1,36 +1,97 @@
 
-var Player = require('./player');
-var Poker = require('./poker');
-var Pot = require('./pot');
+const Player = require('./player');
+const Poker = require('./poker');
+const Pot = require('./pot');
+const ArrayHelper = require('./arrayhelper');
 
 var Room = function(id, room_info) {
     this.room_id = id;
-    this.name = room_info.name ? room_info.name : 'Game ' + id;
+    this.name = room_info.name || 'Game ' + id;
     this.players = {};
-    this.turn = TurnHandler.create_handler(this.turn_timeout, this.players);
+    this.turn = TurnHandler.create_handler(this.players);
     this.pot = new Pot(this.players);
     this.cards = new Poker.Hand([]);
-    this.seats = room_info.seats ? room_info.seats : 1;
-    this.blind = room_info.blind;
+    this.deck = [];
+    this.seats = room_info.seats || 1;
+    this.pokerType = room_info.pokerType || 'texas';
+    this.type = room_info.type || 'sit & go';
+    this.currency = room_info.currency || 'rws';
+    this.status = "waiting";
+
+    this.blind = room_info.blind || 2;
     this.sblind = this.blind / 2;
-    this.type = 'Sit & go';
-    this.currency = room_info.currency;
+
+    this.commStatus = null;
+    this.community = [
+        {type: 'preflop', number: 0},
+        {type: 'flop', number: 3},
+        {type: 'turn', number: 1},
+        {type: 'river', number: 1}
+    ];
 };
 
-//@todo: eloszor megir, aztan refactor code!
-//@todo: return this.error(...)
-Room.prototype.call_action = function(user_id, params) {
+Room.prototype.newTurn = function() {
+    // find next player to become dealer
+    var next = this.turn.getNext();
+    this.turn.setStart(next);
+    this.turn.reset();
+
+    this.deck = ArrayHelper.shuffle(Poker.FrenchDeck);
+    this.commStatus = 0;
+
+    // set dealer and blinds
+    // $$ TODO: itt, nem jó ...
+    this.turn.dealer = this.turn.getFromEnd(2);
+    this.turn.sblind = this.turn.getFromEnd(1);
+    this.turn.blind = this.turn.last;
+
+    console.log(this.turn.current);
+    console.log(this.turn.dealer);
+    console.log(this.turn.sblind);
+    console.log(this.turn.blind);
+
+    this.request_bid();
+};
+
+Room.prototype.request_bid = function() {
+    this.status = 'bidding';
+
+    this.turn.fetchNext();
+
+    this.sendToAll('request_bid_notify', {
+        player_id: this.turn.current
+    });
+};
+
+Room.prototype.call_bid = function(user_id, params) {
     var player = this.getPlayer(user_id);
-    if(!player) return;
+    if(!player || this.status != 'bidding')
+        return;
 
-    //@todo: implement currency handling first
+
+
+    //@todo: implement currency handling
+    // $$$ITT , @todo:
+    // clear everything of prev. round
+    // request bidding
+    // set status
+
+    if(this.turn.end) {
+        this.newTurn();
+    } else {
+        this.requestBid();
+    }
 };
+
+
+
 
 Room.prototype.call_chat_message = function(user_id, params) {
 
 };
 
 Room.prototype.getPlayer = function(user_id) {
+    //@todo: write Hash helper for faster search
     var arr = this.players.filter(function(v) {
         return v.user_id === user_id;
     });
@@ -38,7 +99,7 @@ Room.prototype.getPlayer = function(user_id) {
 };
 
 // @todo: unused and shouldn't be used
-Room.prototype.fetchBestHand = function() {
+/*Room.prototype.fetchBestHand = function() {
     // @todo: implement splitting !
     // @todo: it would be better first to make the client and start calling methods
     var bestPlayer = null;
@@ -55,21 +116,7 @@ Room.prototype.fetchBestHand = function() {
     }
 
     return [bestHandType, bestPlayer];
-};
-
-Room.prototype.get_info = function() {
-    return {
-        room_id : this.room_id, name : this.name,
-        seats : this.seats, type : this.type, players : this.players,
-        turn : this.turn.get_info(),
-        blind : this.blind, sblind: this.sblind, currency: this.currency,
-        avg_pot : 0,
-    };
-};
-
-Room.prototype.get_game_info = function() {
-    return this.get_info();
-};
+};*/
 
 Room.prototype.sendToAll = function(method, params) {
     params.room_id = this.room_id;
@@ -98,20 +145,46 @@ Room.prototype.sendExceptTo = function(user_id0, params) {
     }
 };
 
+Room.prototype.get_info = function() {
+    return {
+        room_id : this.room_id, name : this.name,
+        seats : this.seats, type : this.type,
+        players_number : len(this.players),
+        turn : this.turn.get_info(),
+        blind : this.blind, sblind: this.sblind, currency: this.currency,
+        avg_pot : 0,
+    };
+};
+
+Room.prototype.get_game_info = function() {
+    var info = this.get_info();
+
+    info.players = {};
+    for(var p in this.players) {
+        info.players[p] = this.players[p].get_info();
+    }
+
+    return info;
+};
+
 Room.prototype.call_join_room = function(user_id, params) {
     var user = Server.getUser(user_id);
     var joined = false;
+    var seat = null;
 
     // find old seat of player or reserve an empty seat
-    for(var seat=0; seat<this.seats; seat++) {
+    for(seat=0; seat<this.seats; seat++) {
         if(
             typeof this.players[seat] === 'undefined' 
             ||this.players[seat].username == user.username
         ) {
             user.room_id = params.room_id;
-            user.seat = params.seat;
-    
             this.players[seat] = new Player(seat, user);
+
+            //@todo: temporal
+            user.seat = params.seat;
+            this.players[seat].playing = true;
+            this.players[seat].chips = 1000;
 
             joined = true;
             break;
@@ -134,11 +207,20 @@ Room.prototype.call_join_room = function(user_id, params) {
         params: this.get_game_info()
     });
 
-    this.sendExceptTo(user_id, {
-        group : 'Room',
-        method : 'join_room_notify',
-        params : this.players[user_id]
-    });
+    // Notify others 
+    if(len(this.players) > 1) {
+        this.sendExceptTo(user_id, {
+            group : 'Room',
+            method : 'join_room_notify',
+            params : this.players[user_id]
+        });
+
+        // (re)start the room
+        if(len(this.players) > 2) {
+            this.turn.init();
+            this.newTurn();
+        }
+    }
 };
 
 Room.prototype.call_leave_room = function(user_id, params) {

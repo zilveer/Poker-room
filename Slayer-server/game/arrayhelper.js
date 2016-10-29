@@ -1,4 +1,9 @@
 
+global.len = function(obj) {
+    if(typeof obj === 'object') return Object.keys(obj).length;
+    else return obj.length;
+};
+
 module.exports = {
 	/**
 	 * Generate inverted frequency array from array of objects
@@ -49,5 +54,20 @@ module.exports = {
 			return [5, 5];
 
 		return [maxLength+1, arr[arr_i]];
+	},
+
+	shuffle: function(arr) {
+		var collection = arr.splice(); 
+		var len = arr.length, random, temp;
+		
+		while (len) {
+			random = Math.floor(Math.random() * len);
+			len -= 1;
+			temp = collection[len];
+			collection[len] = collection[random];
+			collection[random] = temp;
+		}
+
+		return collection;
 	}
 };

@@ -31,7 +31,7 @@ module.exports = {
 			var winner = parseInt(aa.shift());
 			var new_chips = aa.shift().split(',');
 
-			var players = [];
+			var players = {};
 			for(var p=0;p<old_chips.length;p++) {
 				var player = new Player(p, {
 					user_id: p, dbid: p, username: p
@@ -39,7 +39,7 @@ module.exports = {
 
 				player.addChips(parseInt(old_chips[p]));
 				player.bet(parseInt(bets[p]));
-				players.push(player);
+				players[p] = player;
 			}
 
 			var pot = new Pot(players);

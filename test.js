@@ -1,11 +1,11 @@
 
 var tests = [
 // PASSES:
-	//'hands',
 	//'bidding',
+	'room',
+	//'hands',
 
 // TO IMPLEMENT:
-	'turns',
 	//'currencies',
 	//'rating',
 

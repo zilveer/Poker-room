@@ -64,7 +64,7 @@ var Room = {
 	},
 
 	join_room_handler: function(room) {
-		room.players_number = Object.keys(room.players).length;
+		//room.players_number = Object.keys(room.players).length;
 		room.creator = Auth.user_id == room.user_id;
 
 		// best variable name 2016 no kappa
@@ -91,7 +91,7 @@ var Room = {
 	},
 
 	create_room_notify: function(room) {
-		room.players_number = Object.keys(room.players).length;
+		//room.players_number = Object.keys(room.players).length;
 		var roomEntryView = Room.templates.room_list_item( room );
 		Room.views.room_list.append( roomEntryView );
 

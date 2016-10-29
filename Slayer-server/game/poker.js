@@ -1,27 +1,35 @@
 
 const ArrayHelper = require('./arrayhelper');
 
-var HandType = {
+const HandType = {
 	NONE: 0, PAIR: 1, TWO_PAIRS: 2, DRILL: 3, POKER: 7,
 	STRAIGHT: 4, FLUSH: 5, FULL_HOUSE: 6, 
 	// @todo: do we need these two?
 	STRAIGHT_FLUSH: 8, ROYAl_FLUSH: 9
 };
-var CardRank = {
+const CardRank = {
 	2:2, 3:3, 4:4, 5:5, 6:6, 7:7, 8:8, 9:9, 10:10,
 	'J':11, 'Q':12, 'K':13, 'A':14, 'S': 1
 };
-var CardType = {
+const CardType = {
 	HEART: 1, SPADE: 2, DIAMOND: 3, CLUB: 4
 };
-var Card = function(type, rank) {
+const Card = function(type, rank) {
 	if(rank == 1)
 		rank = 14;
 	this.type = type;
 	this.rank = rank;
 };
 
-var Hand = function(cards) {
+// Create a constant deck to spare memory
+const deck = [];
+for(var r in CardRank) {
+	for(var t in CardType) {
+		deck.push(new Card(t,r));
+	}
+}
+
+const Hand = function(cards) {
 	this.cards = cards;
 	this.size = cards.length;
 	this.high = null;
@@ -117,6 +125,7 @@ var Hand = function(cards) {
 };
 
 
+
 // Constants
 
 module.exports.CardRank = CardRank;
@@ -124,3 +133,4 @@ module.exports.CardType = CardType;
 module.exports.HandType = HandType;
 module.exports.Card = Card;
 module.exports.Hand = Hand;
+module.exports.FrenchDeck = deck;
