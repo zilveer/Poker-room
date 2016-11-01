@@ -12,6 +12,8 @@ module.exports = function(players) {
 
 		winner.chips += this.sumMainPot();
 
+		//@todo: split pot between winners!
+
 		//if(this.hasAllin || winner.allin) {
 			for(var p in this.players) {
 				var player = this.players[p];
@@ -38,10 +40,36 @@ module.exports = function(players) {
 		return sum;
 	},
 
+	// Count pot:
+	this.sumPot = function() {
+		var sum = 0;
+		for(var p in this.players) {
+			sum += this.players[p].chipsInPot;
+		}
+		return sum;
+	},
+
 	this.resetPot = function() {
 		for(var p in this.players) {
 			this.players[p].reset();
 		}
+	},
+
+	this.resetBids = function() {
+		for(var p in this.players) {
+			this.players[p].chipsInBid = 0;
+		}
+	},
+
+	this.isEqualized = function() {
+		var eqbid = null;
+		for(var p in this.players) {
+			if(!eqbid)
+				eqbid = this.players[p].chipsInPot;
+			if(eqbid != this.players[p].chipsInPot)
+				return false;
+		}
+		return true;
 	},
 
 	this.fetchPots = function() {
@@ -71,31 +99,4 @@ module.exports = function(players) {
 			i++;
 		} while(minPot != sumSidePot && sumSidePot != 0)
 	}
-
-	// Add chips to pot from player
-	this.add = function(playerId, amount) {
-		if(this.players[playerId].chips < amount)
-			return false;
-		
-		// All-in
-		if(this.players[playerId].chips == amount) {
-			this.allins[playerId] = amount;
-		}
-
-		this.players[playerId].chips -= amount;
-		this.pot += amount;
-
-		return true;
-	};
-
-	// Give pot to player
-	this.give = function(playerId) {
-		this.players[playerId].chips += this.pot;
-		this.pot = 0;
-
-		//@todo: how does allin work?
-		return true;
-	};
-
-	// Split pot between players
 };

@@ -1,0 +1,93 @@
+
+
+.scard {
+	position: relative;
+	display: inline-block;
+	width: @scard-width;
+	height: @scard-height;
+	font: @scard-font-size 'Trebuchet MS';
+	
+	margin: @gutter;
+	border: @card-border;
+	border-radius: @scard-padding;
+	background: @card-background;
+	
+	&:before {
+		content: attr(value);
+		position: absolute;
+		width: @scard-after-width;
+		text-align: center;
+		letter-spacing: -1px;
+		font-size: round(2.25 * @scard-font-size);
+	}
+	
+	&:before {
+		top: 2.5 * @scard-padding;
+		left: 2.5 * @scard-padding;
+	}
+
+	&--heart {
+		color: @card-color-red;
+	}
+	&--diamond {
+		color: @card-color-red;
+	}
+	&--spade {
+		color: @card-color-black;
+	}
+	&--club {
+		color: @card-color-black;
+	}
+}
+
+.scard__inner {
+	box-sizing: border-box;
+	position: absolute;
+	display: flex;
+	justify-content: space-between;
+
+	right: 4 * @scard-padding;
+	bottom: 2 * @scard-padding;
+}
+
+.scard__column {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.scard__symbol {
+	display: inline-block;
+	height: @scard-symbol-size;
+	text-align: right;
+	
+	&:before {
+		font-size: 4 * @scard-font-size;
+		line-height: @scard-symbol-size;
+	}
+	
+	.scard--heart &:before {
+		content: '♥';
+	}
+	
+	.scard--spade &:before {
+		content: '♠';
+	}
+	
+	.scard--diamond &:before {
+		content: '♦';
+	}
+
+	.scard--club &:before {
+		content: '♣';
+	}
+
+	&--rotated,
+	&:last-of-type {
+		transform: rotate(180deg);
+	}
+	
+	&:first-of-type {
+		transform: rotate(0);
+	}
+}

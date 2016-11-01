@@ -16,8 +16,9 @@ module.exports = {
 			Game.rooms[0].players[p] = new Player(p, {});
 			var player = Game.rooms[0].players[p];
 			player.ai = AI.createSimpleton(player);
+			player.username = "bot " + p;
+			player.user_id = -p -1;
 			player.chips = 100000;
-			player.username = "eros"+p+"59";
 		}
 	},
 };

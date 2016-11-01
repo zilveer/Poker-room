@@ -1,9 +1,36 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <div id="wrapper">
-        <div id="container">
-            <a href='game/client'>Game client</a>
-        </div>
-    </div>
+	{% set suits = ['diamond', 'club', 'spade', 'heart'] %}
+	{% set aranks = ['J', 'Q', 'K', 'A'] %}
+
+	<div id="wrapper">
+		<div id="container">
+			<h1>Welcome to CringePoker!</h1>
+
+			<p>>> <a href='game/client'>Game client</a></p>
+
+			<br/>
+
+			<section class="cards">
+			{% for s in suits %}
+				{% for i in 2..10 %}
+					<section class="scard scard--{{ s }}" value="{{ i }}">
+						<div class="scard__inner">
+							<div class="scard__symbol"></div>
+						</div>
+					</section>
+				{% endfor %}
+				{% for i in aranks %}
+					<section class="scard scard--{{ s }}" value="{{ i }}">
+						<div class="scard__inner">
+							<div class="scard__symbol"></div>
+						</div>
+					</section>
+				{% endfor %}
+				<br/>
+			{% endfor %}
+			</section>
+		</div>
+	</div>
 {% endblock %}

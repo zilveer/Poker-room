@@ -20,8 +20,8 @@ module.exports = {
 		if(!this.test_two_turns())
 			return;
 
-		//if(!this.test_blinds())
-		//	return;
+		if(!this.test_blinds())
+			return;
 
 		//if(!this.test_seats())
 		//	return;
@@ -34,7 +34,7 @@ module.exports = {
 
 	init: function(pN) {
 		this.room = new Room(0, {seats: pN});
-		for(var p=0;p<pN;p++) {
+		for(var p=0; p<pN; p++) {
 			var player = new Player(p, {
 				user_id: p, dbid: p, username: p
 			});
@@ -57,6 +57,24 @@ module.exports = {
 			return TH.fail('start ['+d+']', d, this.room.turn.start);
 		if(this.room.turn.last != e)
 			return TH.fail('last ['+e+']', e, this.room.turn.last);
+		return true;
+	},
+
+	check_blinds: function(a,b,c,d,e) {
+		if(this.room.turn.current != a)
+			return TH.fail('current [blinds]', a, this.room.turn.current);
+		
+		if(this.room.turn.start != b)
+			return TH.fail('start [blinds]', b, this.room.turn.start);
+		
+		if(this.room.turn.dealer != c)
+			return TH.fail('dealer [blinds]', c, this.room.turn.dealer);
+		
+		if(this.room.turn.sblind != d)
+			return TH.fail('sblind [blinds]', d, this.room.turn.sblind);
+		
+		if(this.room.turn.blind != e)
+			return TH.fail('blind [blinds]', e, this.room.turn.blind);
 		return true;
 	},
 
@@ -123,6 +141,18 @@ module.exports = {
 			return false;
 		this.passed++;
 
+		var fromEnd = this.room.turn.getFromEnd(1);
+		if(fromEnd != 1)
+			return TH.fail('getFromEnd [1]', 1, fromEnd);
+
+		fromEnd = this.room.turn.getFromEnd(2);
+		if(fromEnd != 0)
+			return TH.fail('getFromEnd [2]', 0, fromEnd);
+
+		fromEnd = this.room.turn.last;
+		if(fromEnd != 2)
+			return TH.fail('last', 2, fromEnd);
+
 		this.room.turn.fetchNext();
 		if(!this.check(1, 2, 0, 0, 2))
 			return false;
@@ -158,7 +188,72 @@ module.exports = {
 	},
 
 	test_blinds: function() {
+		// Check room roles with 5 people
+		this.init(5);
+		this.room.request_bid = function(){};
+		
+		this.room.newTurn();
+		if(!this.check_blinds(1, 1, 3, 4, 0))
+			return false;
+		this.passed++;
 
+		this.room.newTurn();
+		if(!this.check_blinds(2, 2, 4, 0, 1))
+			return false;
+		this.passed++;
+
+
+
+		// Check room roles with 4 people
+		this.init(4);
+		this.room.request_bid = function(){};
+		
+		this.room.newTurn();
+		if(!this.check_blinds(1, 1, 2, 3, 0))
+			return false;
+		this.passed++;
+		
+		this.room.newTurn();
+		if(!this.check_blinds(2, 2, 3, 0, 1))
+			return false;
+		this.passed++;
+
+
+		// Check room roles with 3 people
+		this.init(3);
+		this.room.request_bid = function(){};
+
+		this.room.newTurn();
+		if(!this.check_blinds(1, 1, 1, 2, 0))
+			return false;
+		this.passed++;
+
+		this.room.newTurn();
+		if(!this.check_blinds(2, 2, 2, 0, 1))
+			return false;
+		this.passed++;
+
+		this.room.newTurn();
+		if(!this.check_blinds(0, 0, 0, 1, 2))
+			return false;
+		this.passed++;
+
+		// Check room roles with 2 people
+		// this is a special case, we check if the official poker rule is applied here
+		this.init(2);
+		this.room.request_bid = function(){};
+		
+		this.room.newTurn();
+		if(!this.check_blinds(1, 1, 1, 1, 0))
+			return false;
+		this.passed++;
+
+		this.room.newTurn();
+		if(!this.check_blinds(0, 0, 0, 0, 1))
+			return false;
+		this.passed++;
+
+		return true;
 	},
 
 	test_seats: function() {

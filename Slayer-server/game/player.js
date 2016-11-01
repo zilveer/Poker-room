@@ -1,49 +1,65 @@
 
 module.exports = function(seat, params) {
 	// @Interface for Slayer/core/*
-	this.playing = false;		//whether the play is in the room, playing or afk
 	this.user_id = params.user_id;
 	this.database_id = params.dbid;
-	this.ai = false;
 	this.username = params.username;
 
 	// @Interface for game/room
-	this.hand = []; //@Var game/poker/Hand
+	this.hand = null; //@Var game/poker/Hand
+	this.playing = false; // has the player not folded?
+	this.allin = false; // chips == 0
+	this.ai = false;
 
 	// @Interface for game/Pot
-	this.allin = false;
-	this.chips = 0;
-	this.chipsInPot = 0;
-	this.chipsInMainPot = 0;
-	this.chipsInSidePot = 0;
+	this.chips = 0; // chips at hand
+	this.chipsInBid = 0; // chips in pot for the round
+	this.chipsInPot = 0; // chips in pot for the turn
+	this.chipsInMainPot = 0; // chips that the player can win for the turn 
+	this.chipsInSidePot = 0; // used by the sidepot algorithm for all-ins
 
 	// @Interface for game/room
-	this.addChips = function(chips) {
-		this.chips += chips;
-	};
+	this.bid = function(params, minBid) {
+		var minCall = minBid - this.chipsInBid;
+		var amount = 0;
+		var type = params.type;
 
-	// @Interface for game/room
-	this.bet = function(chips) {
-		if(this.chips < chips)
+		if(params.type == 'check')
+			amount = 0;
+		else if(params.type == 'call')
+			amount = minCall;
+		else // raise, bet, sblind, blind
+			amount = parseInt(params.amount);
+			//@todo: raise/bet must be at least twice the amount of big blind ?
+
+		if(amount < minCall || amount > this.chips)
 			return false;
-		else if(this.chips == chips)
+
+		params.amount = amount;
+
+		if(this.chips == amount)
 			this.allin = true;
-		
-		this.chips -= chips;
-		this.chipsInPot += chips;
+		this.chips -= amount;
+		this.chipsInBid += amount;
+		this.chipsInPot += amount;
 
 		return true;
 	};
+
+	/*this.transferBid = function() {
+		this.chipsInPot = this.chipsInBid;
+		this.chipsInBid = 0;
+	};*/
 
 	// @Interface for game/Pot.js
 	this.reset = function() {
 		this.allin = false;
 		this.chipsInPot = 0;
+		this.chipsInBid = 0;
 		this.chipsInMainPot = 0;
 		this.chipsInSidePot = 0;
 	};
 
-	// @Interface for game/Pot.js
 	this.is = function(player) {
 		return this.username == player.username;
 	};
@@ -62,6 +78,7 @@ module.exports = function(seat, params) {
 			allin: this.allin,
 			chips: this.chips,
 			chipsInPot: this.chipsInPot,
+			chipsInBid: this.chipsInBid,
 			chipsInMainPot: this.chipsInMainPot,
 			chipsInSidePot: this.chipsInSidePot,
 		};

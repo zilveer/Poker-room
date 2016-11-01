@@ -57,9 +57,9 @@ module.exports = {
 	},
 
 	shuffle: function(arr) {
-		var collection = arr.splice(); 
+		var collection = arr.slice(); 
 		var len = arr.length, random, temp;
-		
+
 		while (len) {
 			random = Math.floor(Math.random() * len);
 			len -= 1;

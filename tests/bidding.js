@@ -11,6 +11,9 @@ module.exports = {
 	passed: 0,
 
 	run: function() {
+		if(!this.test_minbid())
+			return;
+
 		if(!this.test_bidding())
 			return;
 
@@ -18,6 +21,11 @@ module.exports = {
 		//	return;
 
 		console.log('All ' + this.passed + ' Pot tests PASSED!');
+	},
+
+	test_minbid: function() {
+		// calling, raising, etc amount checking and error check
+		return false;
 	},
 
 	test_bidding: function() {

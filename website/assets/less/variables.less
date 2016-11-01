@@ -1,13 +1,26 @@
-@color: #c0c0c0;
-@background: #fbfbfb;
-@gutter: 10px;
-@font-size: 16px;
 
+
+/* General card scheme */
 @card-background: #fff;
 @card-border: 1px solid #c0c0c0;
-@card-padding: 4px;
-@card-width: 172px;
-@card-height: 240px;
 @card-color-red: #e44145;
 @card-color-black: #252525;
-@card-symbol-size: 40px;
+
+/* Big cards */
+@pcard-height: 160px;
+@pcard-font-size: 11px;
+@pcard-width: round(@pcard-height * .7166);
+@pcard-symbol-size: round(@pcard-height * .1666);
+@gutter: ceil(@pcard-height * .04166);
+@pcard-padding: ceil(@pcard-height * .01666);
+@pcard-after-width: round(@pcard-height * 0.05);
+
+/* Small cards */
+@scard-height: 80px;
+@scard-width: round(@scard-height * .7166);
+@scard-font-size: 12px;
+@scard-padding: ceil(@scard-height * .01666);
+@scard-symbol-size: round(@scard-height * .55);
+@scard-padding: ceil(@scard-height * .01666);
+@scard-after-width: round(@scard-height * 0.05);
+@scard-margin: ceil(@scard-height * .04);

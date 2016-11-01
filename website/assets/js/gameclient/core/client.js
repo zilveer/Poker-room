@@ -12,21 +12,21 @@ var Client = {
 	
 	hide: function() {
 		if(!this.hidden) {
-			//this._parent.modal("hide");
+			//this._connector.modal("hide");
 			this.hidden = true;
 		}
 	},
 
 	show: function() {
 		if(this.hidden) {
-			//this._parent.modal("show");
+			//this._connector.modal("show");
 			this.hidden = false;
 		}
 	},
 
 	init: function(conf) {
 		Client.config = conf;
-		this._parent = $('#connector');
+		this._connector = $('#connector');
 		this._progress = $('#connector-progress .progress-bar');
 		this._out = $('#connector-response');
 		this._title = $('#connector-title');

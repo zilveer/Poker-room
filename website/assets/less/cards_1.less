@@ -1,34 +1,34 @@
 
 
-.card {
+.pcard {
 	position: relative;
 	display: inline-block;
-	width: @card-width;
-	height: @card-height;
-	font: @font-size 'Trebuchet MS';
+	width: @pcard-width;
+	height: @pcard-height;
+	font: @pcard-font-size 'Trebuchet MS';
 	
 	margin: @gutter;
 	border: @card-border;
-	border-radius: @card-padding;
+	border-radius: @pcard-padding;
 	background: @card-background;
 	
 	&:before,
 	&:after {
 		content: attr(value);
 		position: absolute;
-		width: 12px;
+		width: @pcard-after-width;
 		text-align: center;
-		letter-spacing: -2px;
+		letter-spacing: -1px;
 	}
 	
 	&:before {
-		top: @card-padding;
-		left: @card-padding;
+		top: @pcard-padding;
+		left: @pcard-padding;
 	}
 	
 	&:after {
-		bottom: @card-padding;
-		right: @card-padding;
+		bottom: @pcard-padding;
+		right: @pcard-padding;
 		transform: rotate(180deg)
 	}
 	
@@ -40,17 +40,17 @@
 			content: attr(value) ' ♥';
 		}
 
-		&[value="J"] .card__inner {
+		&[value="J"] .pcard__inner {
 			background: url("faces/face-jack-heart.png");
 			background-size: 100% 100%;
 		}
 
-		&[value="Q"] .card__inner {
+		&[value="Q"] .pcard__inner {
 			background: url("faces/face-queen-heart.png");
 			background-size: 100% 100%;
 		}
 
-		&[value="K"] .card__inner {
+		&[value="K"] .pcard__inner {
 			background: url("faces/face-king-heart.png");
 			background-size: 100% 100%;
 		}
@@ -64,17 +64,17 @@
 			content: attr(value) ' ♠';
 		}
 
-		&[value="J"] .card__inner {
+		&[value="J"] .pcard__inner {
 			background: url("faces/face-jack-spade.png");
 			background-size: 100% 100%;
 		}
 
-		&[value="Q"] .card__inner {
+		&[value="Q"] .pcard__inner {
 			background: url("faces/face-queen-spade.png");
 			background-size: 100% 100%;
 		}
 
-		&[value="K"] .card__inner {
+		&[value="K"] .pcard__inner {
 			background: url("faces/face-king-spade.png");
 			background-size: 100% 100%;
 		}
@@ -89,17 +89,17 @@
 		}
 
 
-		&[value="J"] .card__inner {
+		&[value="J"] .pcard__inner {
 			background: url("faces/face-jack-diamond.png");
 			background-size: 100% 100%;
 		}
 
-		&[value="Q"] .card__inner {
+		&[value="Q"] .pcard__inner {
 			background: url("faces/face-queen-diamond.png");
 			background-size: 100% 100%;
 		}
 
-		&[value="K"] .card__inner {
+		&[value="K"] .pcard__inner {
 			background: url("faces/face-king-diamond.png");
 			background-size: 100% 100%;
 		}
@@ -113,39 +113,39 @@
 			content: attr(value) ' ♣';
 		}
 
-		&[value="J"] .card__inner {
+		&[value="J"] .pcard__inner {
 			background: url("faces/face-jack-club.png");
 			background-size: 100% 100%;
 		}
 
-		&[value="Q"] .card__inner {
+		&[value="Q"] .pcard__inner {
 			background: url("faces/face-queen-club.png");
 			background-size: 100% 100%;
 		}
 
-		&[value="K"] .card__inner {
+		&[value="K"] .pcard__inner {
 			background: url("faces/face-king-club.png");
 			background-size: 100% 100%;
 		}
 	}
 }
 
-.card__inner {
+.pcard__inner {
 	box-sizing: border-box;
 	position: absolute;
 	display: flex;
 	justify-content: space-between;
-	top: 6 * @card-padding;
-	left: 6 * @card-padding;
-	right: 6 * @card-padding;
-	bottom: 6 * @card-padding;
+	top: 6 * @pcard-padding;
+	left: 6 * @pcard-padding;
+	right: 6 * @pcard-padding;
+	bottom: 6 * @pcard-padding;
 	
 	&--centered {
 		justify-content: center;
 	}
 }
 
-.card__column {
+.pcard__column {
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
@@ -155,29 +155,29 @@
 	}
 }
 
-.card__symbol {
+.pcard__symbol {
 	display: inline-block;
-	height: @card-symbol-size;
+	height: @pcard-symbol-size;
 	text-align: center;
 	
 	&:before {
-		font-size: 4 * @font-size;
-		line-height: @card-symbol-size;
+		font-size: 4 * @pcard-font-size;
+		line-height: @pcard-symbol-size;
 	}
 	
-	.card--heart &:before {
+	.pcard--heart &:before {
 		content: '♥';
 	}
 	
-	.card--spade &:before {
+	.pcard--spade &:before {
 		content: '♠';
 	}
 	
-	.card--diamond &:before {
+	.pcard--diamond &:before {
 		content: '♦';
 	}
 
-	.card--club &:before {
+	.pcard--club &:before {
 		content: '♣';
 	}
 
@@ -191,20 +191,14 @@
 	}
 	
 	&--big {
-		flex-basis: 0.25 * @card-height;
+		flex-basis: 0.25 * @pcard-height;
 	}
 	
 	&--huge {
-		flex-basis: 0.45 * @card-height;
+		flex-basis: 0.45 * @pcard-height;
 	}
 
 	&--ace {
 		transform: scale(1.5) !important;
 	}
-}
-
-.title {
-	font: 18px 'Trebuchet MS';
-	color: #444;
-	text-align: center;
 }

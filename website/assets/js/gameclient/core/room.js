@@ -105,23 +105,12 @@ var Room = {
 		Room.views.room_list.find('tr[room-id="' + params.room_id + '"]').remove();
 	},
 
-	send: function(group, method, params) {
-		if(typeof(params) === 'undefined') {
-			if(typeof(method) === 'array') {
-				method = group;
-				group = 'Game';
-				params = method;
-				if(Room.config.room_id !== null)
-					params.room_id = Room.config.room_id;
-			}
-			else if(typeof(params) === 'undefined') {
-				method = group;
-				group = 'Game';
-				if(Room.config.room_id !== null)
-					params = {room_id:Room.config.room_id};
-			}
-		}
+	send: function(method, params) {
+		if(!params)
+			params = {}
+		if(Room.config.room_id !== null)
+			params.room_id = Room.config.room_id;
 
-		Client.send(group, method, params);
+		Client.send('Game', method, params);
 	}
 };

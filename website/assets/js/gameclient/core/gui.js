@@ -12,7 +12,6 @@ var GUI = {
 		GUI.debug = $('#debug');
 
 		for(var tab in GUI.tabs) {
-			console.log(tab, GUI.tabs[tab])
 			GUI.tabs[tab].hide();
 		}
 	},

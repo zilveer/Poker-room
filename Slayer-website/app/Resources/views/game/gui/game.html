@@ -1,13 +1,116 @@
 <div class="container">
-	<div class="panel">
-		<div class="row">
-			<div class="col-sm-12">
-				<div id="comm-cards"></div>
+	<!--<div class="poker-table bg-poker">
+	</div>-->
+	<div id="table" class="row">
+		<div class="col-sm-6">
+			<h5>Table:</h5>
+			<div class="player" player-id="0">
+				<strong class="name"></strong>: 
+				<span class="bid"></span>
+			</div>
+			<div class="player" player-id="1">
+				<strong class="name"></strong>: 
+				<span class="bid"></span>
+			</div>
+			<div class="player" player-id="2">
+				<strong class="name"></strong>: 
+				<span class="bid"></span>
+			</div>
+			<div>
+				Sum: <strong class="underline-twice" id="pot"></strong>
+			</div>
+			<hr/>
+		</div>
+		<div class="col-sm-6">
+			<h5>Players:</h5>
+
+			<div class="player" player-id="0">
+				<span class="name"></span>: 
+				<span class="chips"></span> 
+				<span class="role text-danger"></span>
+				<span class="turn text-primary"></span>
+			</div>
+
+			<div class="player" player-id="1">
+				<span class="name"></span>: 
+				<span class="chips"></span>
+				<span class="role text-danger"></span>
+				<span class="turn text-primary"></span>
+			</div>
+
+			<div class="player" player-id="2">
+				<span class="name"></span>: 
+				<span class="chips"></span>
+				<span class="role text-danger"></span>
+				<span class="turn text-primary"></span>
+			</div>
+
+			<div>
+				<span id="connector" class="text-danger">Waiting for other players</span>
 			</div>
 		</div>
-		<div class="row">
-			<div id="my-cards" class="col-sm-6"></div>
-			<div id="player-cards" class="col-sm-6"></div>
+	</div>
+	<div class="row">
+		<div class="col-sm-6">
+			<div id="table-cards"></div>
+		</div>
+		<div class="col-sm-6">
+			<div id="hand-cards"></div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-sm-6">
+			<div class="bid-stage row" stage="0">
+				<span class="text-danger"></span>
+			</div>
+			<div class="bid-stage row" stage="R">
+				<div class="range range-warning">
+					<input type="range" id="bid-input" min="1" max="100" value="0" oninput="range.value=value">
+					<output id="range">50</output>
+				</div>
+			</div>
+			<div class="bid-stage row" stage="1">
+				<div class="col-sm-4 nopadding">
+					<button role="bid-btn" bid-type="check" class="btn btn-bid btn-outline btn-block btn-primary">Check</button>
+				</div>
+				<div class="col-sm-4 nopadding">
+					<button role="bid-btn" bid-type="bet" class="btn btn-bid btn-outline btn-block btn-warning">Bet <span role="bid-bet-amount">0</span></button>
+				</div>
+				<div class="col-sm-4 nopadding">
+					<button role="fold-btn" class="btn btn-bid btn-outline btn-block btn-secondary">Fold</button>
+				</div>
+			</div>
+			<div class="bid-stage row" stage="2">
+				<div class="col-sm-4 nopadding">
+					<button role="bid-btn" bid-type="call" class="btn btn-bid btn-outline btn-block btn-primary">Call <span role="bid-call-amount">0</span></button>
+				</div>
+				<div class="col-sm-4 nopadding">
+					<button role="bid-btn" bid-type="raise" class="btn btn-bid btn-outline btn-block btn-warning">Raise To <span role="bid-raise-amount">0</span></button>
+				</div>
+				<div class="col-sm-4 nopadding">
+					<button role="fold-btn" class="btn btn-bid btn-outline btn-block btn-secondary">Fold</button>
+				</div>
+			</div>
+			<div class="bid-stage row" stage="3">
+				<div class="col-sm-4 nopadding">
+				</div>
+				<div class="col-sm-4 nopadding">
+					<button role="bid-btn" bid-type="allin" class="btn btn-bid btn-outline btn-block btn-danger">All In (<span role="bid-amount">0</span>)</button>
+				</div>
+				<div class="col-sm-4 nopadding">
+					<button role="fold-btn" class="btn btn-bid btn-outline btn-block btn-secondary">Fold</button>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-6">
+			<ul id="chat" class="list-group">
+				<li class="list-group-item">Böffer</li>
+				<li class="list-group-item">Böffer</li>
+				<li class="list-group-item">Böffer</li>
+				<li class="list-group-item">Böffer</li>
+				<li class="list-group-item">Böffer</li>
+				<li class="list-group-item">Böffer</li>
+			</ul>
 		</div>
 	</div>
 </div>
