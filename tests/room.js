@@ -39,7 +39,7 @@ module.exports = {
 				user_id: p, dbid: p, username: p
 			});
 
-			player.addChips(1000);
+			player.chips = 1000;
 			this.room.players[p] = player;
 		}
 

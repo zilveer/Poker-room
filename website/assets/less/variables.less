@@ -1,5 +1,20 @@
 
 
+/* Poker table */
+/*@ptable-width: 500px;
+*/
+
+@ptable-width: 700px;
+@ptable-profile-width: round(@ptable-width * 0.16);
+@ptable-radius-width: (@ptable-width/2) - (@ptable-profile-width/2);
+@ptable-profile-position-x: @ptable-radius-width;
+
+@ptable-height: round(@ptable-width * 0.6);
+@ptable-radius-height: (@ptable-height/2)- (@ptable-profile-width/2);
+@ptable-profile-position-y: @ptable-radius-height ;
+
+
+
 /* General card scheme */
 @card-background: #fff;
 @card-border: 1px solid #c0c0c0;

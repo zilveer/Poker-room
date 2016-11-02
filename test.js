@@ -1,8 +1,8 @@
 
 var tests = [
 // PASSES:
-	//'bidding',
-	//'room',
+	'bidding',
+	'room',
 	'hands',
 
 // TO IMPLEMENT:

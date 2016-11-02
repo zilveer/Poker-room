@@ -16,4 +16,13 @@ class AdminController extends Controller
         return $this->render('dev/mapgentest.html.twig', [
         ]);
     }
+
+    /**
+     * @Route("/dev/guitest", name="guitest")
+     */
+    public function guitestAction(Request $request)
+    {
+        return $this->render('dev/guitest.html.twig', [
+        ]);
+    }
 }
