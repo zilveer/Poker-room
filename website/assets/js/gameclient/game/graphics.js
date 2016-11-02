@@ -1,5 +1,14 @@
 
 var GameGraphics = {
+	ranks: {11:'J',12:'Q',13:'K',14:'A'},
+	types: {1: 'heart', 2: 'spade', 3: 'diamond', 4:'club'},
+
+	getRank: function(rank) {
+		if(this.ranks[rank])
+			return this.ranks[rank]
+		return rank;
+	}
+
 	setup: function() {
 		GameGraphics.update_cards();
 		GameGraphics.update_hand();
@@ -22,8 +31,8 @@ var GameGraphics = {
 	},
 
 	_render_card: function(type, rank) {
-		type = type.toLowerCase();
-		rank = rank.toUpperCase();
+		type = this.types[type];
+		rank = this.getRank(rank);
 
 		return '<section class="scard scard--'+ type +'" value="'+ rank +'">' +
 			'<div class="scard__inner">' +

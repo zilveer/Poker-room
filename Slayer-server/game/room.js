@@ -161,31 +161,37 @@ Room.prototype.dealCards = function() {
 };
 
 Room.prototype.endTurn = function() {
-    console.log('New turn should be requested')
-
     var hands = [];
     for(var p in this.players) {
         hands.push({
-            full_hand: this.cards.merge(this.players[p].hand),
-            player_id: p
+            player_id: p,
+            hand: this.cards.merge(this.players[p].hand),
         });
     }
+    var winners = Poker.getBestHands(hands);
+    var win_amount = 0;
 
-    hands.sort(function(a,b){
-        return a.full_hand.compare( b.full_hand )
-    });
+    console.log('Winners:', winners, win_amount);
+    console.log('New turn should be requested');
 
-    console.log('Top hands:')
-    for(var hand of hands) {
-        console.log(hand.player_id, hand.full_hand.type, hand.full_hand.high, hand.full_hand.cards);
+    if(winners.length == 1) {
+        win_amount = this.pot.rewardWinner(winners[0].player_id);
+
+        this.sendToAll('winner_notify', {
+            type: 'single',
+            winner: winners[0].player_id,
+            amount: win_amount
+        });
+    } else {
+        console.log('Split');
+        win_amount = this.pot.rewardWinners(winners);
+
+        this.sendToAll('winner_notify', {
+            type: 'split',
+            winners: winners,
+            amount: win_amount
+        });
     }
-
-    /* $$$ ITT
-    @todo:
-    - compare hands (high too!)
-    - get winner
-    - reset everything (players, pot, deck, minbid)
-    */
 
     //setTimeout(this.newTurn.bind(this), Delay.newTurn);
 };

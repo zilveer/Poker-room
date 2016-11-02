@@ -9,10 +9,9 @@ module.exports = function(players) {
 	this.rewardWinner = function(winnerId) {
 		this.fetchPots();
 		var winner = this.players[winnerId];
+		var old_chips = winner.chips;
 
 		winner.chips += this.sumMainPot();
-
-		//@todo: split pot between winners!
 
 		//if(this.hasAllin || winner.allin) {
 			for(var p in this.players) {
@@ -29,6 +28,8 @@ module.exports = function(players) {
 				}
 			}
 		//}
+
+		return winner.chips - old_chips;
 	},
 
 	// Count main pot:

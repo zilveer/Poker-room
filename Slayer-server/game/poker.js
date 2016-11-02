@@ -7,27 +7,11 @@ const HandType = {
 	// @todo: do we need these two?
 	STRAIGHT_FLUSH: 8, ROYAl_FLUSH: 9
 };
+
 const ACE = 14;
 
-//@todo: we might not need any of these as a DICT
-	// only on frontend side
-/*const CardRank = {
-	2:2, 3:3, 4:4, 5:5, 6:6, 7:7, 8:8, 9:9, 10:10,
-	'J':11, 'Q':12, 'K':13, 'A':14
-	//, 'S': 1 // the fuck?
-};
-const CardType = {
-	HEART: 1, SPADE: 2, DIAMOND: 3, CLUB: 4
-};
-const BetType = {
-	CHECK: 'check', RAISE: 'raise', BET: 'bet', CALL: 'call'
-};*/
-//\@todo
-
-
 const Card = function(type, rank) {
-	if(rank == 1)
-		rank = ACE;
+	if(rank == 1) rank = ACE;
 	this.type = type;
 	this.rank = rank;
 };
@@ -41,6 +25,25 @@ for(var r = 2; r <= ACE; r++) {
 		deck.push(new Card(t, r));
 	}
 }
+
+module.exports.getBestHands = function(players) {
+    players.sort(function(a,b){
+        return a.hand.compare( b.hand )
+    });
+
+    var winners = [players.pop()];
+
+    for(var player of players) {
+    	if (player.hand.type == winners[0].hand.type && 
+    		player.hand.high == winners[0].hand.high && 
+    		player.hand.kicker == winners[0].hand.kicker
+    	) {
+			winners.push(player.player_id);
+		}
+    }
+
+    return winners;
+};
 
 const Hand = function(cards) {
 	this.cards = cards || [];

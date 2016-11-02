@@ -7,8 +7,36 @@ module.exports = {
 		if(!this.test_hand_cmp())
 			return;
 
-		//if(!this.test_hand_types())
+		if(!this.test_hand_types())
+			return;
+
+		//if(!this.test_hand_split())
 		//	return;
+	},
+
+	test_hand_split: function() {
+		var handsContents = fs.readFileSync(__dirname + '/files/hands_split.csv').toString().split('\n');
+		var hands = [];
+		var i = 0;
+
+		for(var handContent of handsContents) {
+			var aa = handContent.split(',');
+			var _hand = [
+				new Poker.Card(parseInt(aa[0]), parseInt(aa[1])),
+				new Poker.Card(parseInt(aa[2]), parseInt(aa[3])), 
+				new Poker.Card(parseInt(aa[4]), parseInt(aa[5])), 
+				new Poker.Card(parseInt(aa[6]), parseInt(aa[7])), 
+				new Poker.Card(parseInt(aa[8]), parseInt(aa[9])), 
+				new Poker.Card(parseInt(aa[10]), parseInt(aa[11])), 
+				new Poker.Card(parseInt(aa[12]), parseInt(aa[13])), 
+			];
+
+			var hand = new Poker.Hand(_hand);
+
+			hand.fetchType();
+			hands.push({full_hand: hand, player_id:i++, expected_type: aa[14], expected_high: aa[15], expected_kicker:aa[16]});
+		}
+		return true;
 	},
 
 	test_hand_cmp: function() {
@@ -55,7 +83,9 @@ module.exports = {
 			}
 			j++;
 		}
+
 		console.log('All ' + j + ' Poker hand compare tests PASSED!');
+		return true;
 	},
 
 	test_hand_types: function() {

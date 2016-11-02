@@ -1,0 +1,20 @@
+
+.ptable {
+	width: 500px;
+	height: 300px;
+	
+	background: green;
+	border-radius: 150px;
+	border: solid 3px black;
+}
+
+.ptable-player {
+	width: 50px;
+	height: 50px;
+	background: white;
+	border: solid 1px black;
+
+	-ms-transform: translate(50px, 100px); /* IE 9 */
+    -webkit-transform: translate(50px, 100px); /* Safari */
+    transform: translate(50px, 100px);
+}

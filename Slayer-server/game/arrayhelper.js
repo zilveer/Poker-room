@@ -55,14 +55,15 @@ module.exports = {
 			return rank;
 		}, new Set()));
 
-		arr.sort((a, b) => {  return a - b;  });
+		arr.sort((a, b) => { return a - b; });
 
-		// @todo:
-		//special case for suckers' straight, where Ace acts as a low
-		//var suckers = [2,3,4,5,14];
-		//if(arr.every((v,i)=> v === suckers[i]))
-		//	return [5, 5];
+		// Special case for suckers' straight, where Ace acts as a low
+		var suckers = [2,3,4,5,14];
+		if(arr.length == suckers.length && arr.every((v,i)=> v === suckers[i])) {
+			return [5, 5];
+		}
 
+		// Fetch biggest sequence (dinprog)
 		var res = [0];
 		for(var i=1;i<arr.length;i++) {
 			res[i] = (arr[i] == arr[i-1] + 1) ? res[i-1] + 1 : 0;
