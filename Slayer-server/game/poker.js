@@ -7,7 +7,11 @@ const HandType = {
 	// @todo: do we need these two?
 	STRAIGHT_FLUSH: 8, ROYAl_FLUSH: 9
 };
-const CardRank = {
+const ACE = 14;
+
+//@todo: we might not need any of these as a DICT
+	// only on frontend side
+/*const CardRank = {
 	2:2, 3:3, 4:4, 5:5, 6:6, 7:7, 8:8, 9:9, 10:10,
 	'J':11, 'Q':12, 'K':13, 'A':14
 	//, 'S': 1 // the fuck?
@@ -15,26 +19,26 @@ const CardRank = {
 const CardType = {
 	HEART: 1, SPADE: 2, DIAMOND: 3, CLUB: 4
 };
-const StatusType = {
-	PREFLOP: 0, FLOP: 1, TURN: 2, RIVER: 3
-};
 const BetType = {
 	CHECK: 'check', RAISE: 'raise', BET: 'bet', CALL: 'call'
-};
+};*/
+//\@todo
 
 
 const Card = function(type, rank) {
 	if(rank == 1)
-		rank = 14;
+		rank = ACE;
 	this.type = type;
 	this.rank = rank;
 };
 
 // Create a constant deck to spare memory
 const deck = [];
-for(var r in CardRank) {
-	for(var t in CardType) {
-		deck.push(new Card(t,r));
+// All ranks from 2 to Ace
+for(var r = 2; r <= ACE; r++) {
+	// All suits from hearts to clubs
+	for(var t = 1; t <= 4; t++) {
+		deck.push(new Card(t, r));
 	}
 }
 
@@ -81,15 +85,6 @@ const Hand = function(cards) {
 		return this.high;
 	};
 
-	this.getHighest = function(arr) {
-		var max_i = null;
-		for(var a of arr) {
-			if(max_i == null || CardRank[a] > CardRank[max_i])
-				max_i = a;
-		}
-		return max_i;
-	};
-
 	// Gets the largest card in the deck
 	this.getKicker = function() {
 		if(!this.kicker)
@@ -109,6 +104,10 @@ const Hand = function(cards) {
 		return kicker;
 	};
 
+	this.getHighestInFlush = function(arr) {
+		console.log(arr);
+	};
+
 	/**
 	 * Calculates the hand type from 2-7 cards O(7+9)
 	 */
@@ -122,16 +121,11 @@ const Hand = function(cards) {
 		var series_length = aa[0];
 		var series_high = aa[1];
 
-		// $$$ITT
-		//@TODO: series length & high 1-el kevesebb!
-		console.log(series_length, series_high);
-
 		for(var i=7;i>=5;i--) {
 			// Flush:
 			if(types[i]) {
 				this.type = HandType.FLUSH;
-				// @todo: get high for flush!
-				//this.high = this.getHighestFlush(this.types[i]);
+				this.high = ArrayHelper.max( ArrayHelper.filter(this.cards, 'type', types[i]), 'rank' );
 			}
 
 			// Straight:
@@ -142,12 +136,11 @@ const Hand = function(cards) {
 					this.high = series_high;
 
 					// Royal FLush
-					if(this.high == CardRank.A) {
+					if(this.high == ACE) {
 						this.type = HandType.ROYAl_FLUSH;
 					}
 				}
 				else {
-					//@todo: high card counts here?
 					this.type = HandType.STRAIGHT;
 					this.high = series_high;
 				}
@@ -163,13 +156,13 @@ const Hand = function(cards) {
 		// Four of a Kind
 		else if(ranks[4]) {
 			this.type = HandType.POKER;
-			this.high = this.getHighest(ranks[4]);
+			this.high = Math.max(...ranks[4]);
 		}
 
 		// Full House
 		else if(ranks[3] && ranks[2]) {
 			this.type = HandType.FULL_HOUSE;
-			this.high = this.getHighest(ranks[3].concat(ranks[2]));
+			this.high = Math.max(...ranks[3].concat(ranks[2]));
 		}
 
 		if(this.type >= HandType.STRAIGHT)
@@ -178,19 +171,19 @@ const Hand = function(cards) {
 		// Drill
 		else if(ranks[3]) {
 			this.type = HandType.DRILL;
-			this.high = this.getHighest(ranks[3]);
+			this.high = Math.max(...ranks[3]);
 		}
 
 		// Two Pairs
 		else if(ranks[2] && ranks[2].length >= 2) {
 			this.type = HandType.TWO_PAIRS;
-			this.high = this.getHighest(ranks[2]);
+			this.high = Math.max(...ranks[2]);
 		}
 
 		// Pair
 		else if(ranks[2]) {
 			this.type = HandType.PAIR;
-			this.high = this.getHighest(ranks[2]);
+			this.high = Math.max(...ranks[2]);
 		}
 
 		return this.type;
@@ -204,11 +197,11 @@ const Hand = function(cards) {
 
 
 // Constants
-module.exports.CardRank = CardRank;
-module.exports.CardType = CardType;
-module.exports.HandType = HandType;
-module.exports.StatusType = StatusType;
-module.exports.BetType = BetType;
+//module.exports.CardRank = CardRank;
+//module.exports.CardType = CardType;
+//module.exports.HandType = HandType;
+//module.exports.StatusType = StatusType;
+//module.exports.BetType = BetType;
 
 module.exports.Card = Card;
 module.exports.Hand = Hand;

@@ -11,6 +11,10 @@ const Delay = {
     newTurn: 100,
 };
 
+const StatusType = {
+    PREFLOP: 0, FLOP: 1, TURN: 2, RIVER: 3
+};
+
 var Room = function(id, room_info) {
     this.room_id = id;
     this.name = room_info.name || 'Game ' + id;
@@ -114,7 +118,7 @@ Room.prototype.call_bid = function(user_id, params) {
     if(!player.bid(params, this.minBid))
         return this.sendErrorTo(player.turnId, 'wrong_amount');
 
-    if(params.type == Poker.BetType.RAISE || params.type == Poker.BetType.BET)
+    if(params.type == 'raise' || params.type == 'bet')
         this.minBid = params.amount + prev_chipsInBid;
 
     console.log(player.turnId, 'has', params.type + 'ed', params.amount);
@@ -138,7 +142,7 @@ Room.prototype.dealCards = function() {
     this.status = 'dealing';
     this.cardStatus++;
 
-    if(this.cardStatus == Poker.StatusType.FLOP) {
+    if(this.cardStatus == StatusType.FLOP) {
         this.cards.add(this.deck.pop());
         this.cards.add(this.deck.pop());
         this.cards.add(this.deck.pop());
@@ -191,7 +195,7 @@ Room.prototype.nextAction = function() {
         this.pot.resetBids();
         this.minBid = 0;
 
-        if(this.cardStatus == Poker.StatusType.RIVER) {
+        if(this.cardStatus == StatusType.RIVER) {
             // Finished turn, let's start all over again
             this.status = 'revealing';
             setTimeout(this.endTurn.bind(this), Delay.endTurn);

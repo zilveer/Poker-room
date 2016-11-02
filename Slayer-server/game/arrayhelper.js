@@ -14,7 +14,7 @@ module.exports = {
 
 			return type;
 		}, {});
-		
+
 		var type_freqs = {};
 		for(var type in type_ifreqs) {
 			var freq = type_ifreqs[type];
@@ -29,31 +29,47 @@ module.exports = {
 		return type_freqs;
 	},
 
+	filter: function(cont, attr, value) {
+		var arr = [];
+		for(var c in cont) {
+			if(cont[c][attr] == value){
+				arr.push(cont[c])
+			}
+		}
+		return arr;
+	},
+
+	max: function(cont, attr) {
+		return cont.reduce((max, item) => {
+			return item[attr] > max ? item[attr] : max;
+		}, 0);
+	},
+
 	/**
 	 * Get longest series in list of ranks
 	 * @todo: this is partly poker logic
 	 */
 	max_series: function(cont) {
-		var arr = cont.reduce((rank, item) => {
-			rank.push(parseInt(item.rank))
+		var arr = Array.from(cont.reduce((rank, item) => {
+			rank.add(parseInt(item.rank))
 			return rank;
-		}, []);
+		}, new Set()));
 
 		arr.sort((a, b) => {  return a - b;  });
 
-		var res = [0];
-		for(var i=1;i<arr.length;i++)
-			res[i] = (arr[i] == arr[i-1] + 1) ? (res[i-1] + 1) : 0;
-
-		var maxLength = Math.max.apply({},res) + 0;
-		var arr_i = res.indexOf(maxLength);
-
+		// @todo:
 		//special case for suckers' straight, where Ace acts as a low
-		var suckers = [2,3,4,5,14];
-		if(arr.every((v,i)=> v === suckers[i]))
-			return [5, 5];
+		//var suckers = [2,3,4,5,14];
+		//if(arr.every((v,i)=> v === suckers[i]))
+		//	return [5, 5];
 
-		return [maxLength+1, arr[arr_i]];
+		var res = [0];
+		for(var i=1;i<arr.length;i++) {
+			res[i] = (arr[i] == arr[i-1] + 1) ? res[i-1] + 1 : 0;
+		}
+
+		var series_length = Math.max.apply({},res);
+		return [series_length+1, arr[res.indexOf(series_length)]];
 	},
 
 	shuffle: function(arr) {
