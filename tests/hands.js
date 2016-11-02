@@ -38,11 +38,6 @@ module.exports = {
 			return a.full_hand.compare( b.full_hand )
 		});
 
-		// $$$ ITT
-		//@todo: check kicker null/0 comparision?
-		//@todo: get highest in FLUSH
-		//@todo: test all hands (each line diff hands!)
-
 		var j = 0;
 		for(var hand of hands) {
 			if(hand.full_hand.type != hand.expected_type) {
@@ -53,9 +48,11 @@ module.exports = {
 				return TH.fail('High['+hand.player_id+']', hand.expected_high, hand.full_hand.high);
 			}
 			
-			//if(hand.full_hand.kicker != hand.expected_kicker) {
-			//	return TH.fail('Kicker['+hand.player_id+']', hand.expected_kicker, hand.full_hand.kicker);
-			//}
+			// $$$ ITT
+			//@todo: check kicker null/0 comparision?
+			if(hand.full_hand.kicker != hand.expected_kicker) {
+				return TH.fail('Kicker['+hand.player_id+']', hand.expected_kicker, hand.full_hand.kicker);
+			}
 			j++;
 		}
 		console.log('All ' + j + ' Poker hand compare tests PASSED!');

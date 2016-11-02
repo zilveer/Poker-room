@@ -48,7 +48,7 @@ const Hand = function(cards) {
 
 	this.type = HandType.NONE;
 	this.high = null;
-	this.kicker = null;
+	this.kicker = 0;
 
 	this.add = function(cards) {
 		this.cards = this.cards.concat(cards);
@@ -69,9 +69,9 @@ const Hand = function(cards) {
 	this.compare = function(hand) {
 		var cmp = Math.sign(this.getType() - hand.getType());
 		if(cmp == 0)
-			cmp = Math.sign(this.getHigh() - hand.getHigh());
+			cmp = Math.sign(this.high - hand.high);
 		else if(cmp == 0)
-			cmp = Math.sign(this.getKicker() - hand.getKicker());
+			cmp = Math.sign(this.kicker - hand.kicker);
 		return cmp;
 	};
 
@@ -81,31 +81,10 @@ const Hand = function(cards) {
 		return this.type;
 	};
 
-	this.getHigh = function() {
-		return this.high;
-	};
-
-	// Gets the largest card in the deck
 	this.getKicker = function() {
-		if(!this.kicker)
-			this.fetchKicker();
-		return this.kicker;
-	};
-
-	this.fetchKicker = function() {
-		// 5 length hands have no kickers
-		if(this.type >= HandType.STRAIGHT && this.type != HandType.POKER) {
-			this.kicker = null;
-		} else {
-			this.kicker = this.cards.reduce((high, item) => {
-				return item.rank > high ? item.rank : high;
-			}, 0);			
-		}
-		return kicker;
-	};
-
-	this.getHighestInFlush = function(arr) {
-		console.log(arr);
+		return this.cards.reduce((high, item) => {
+			return item.rank > high ? item.rank : high;
+		}, 0);
 	};
 
 	/**
@@ -126,6 +105,7 @@ const Hand = function(cards) {
 			if(types[i]) {
 				this.type = HandType.FLUSH;
 				this.high = ArrayHelper.max( ArrayHelper.filter(this.cards, 'type', types[i]), 'rank' );
+				this.kicker = 0;
 			}
 
 			// Straight:
@@ -134,6 +114,7 @@ const Hand = function(cards) {
 				if(this.type == HandType.FLUSH) {
 					this.type = HandType.STRAIGHT_FLUSH;
 					this.high = series_high;
+					this.kicker = 0;
 
 					// Royal FLush
 					if(this.high == ACE) {
@@ -143,6 +124,7 @@ const Hand = function(cards) {
 				else {
 					this.type = HandType.STRAIGHT;
 					this.high = series_high;
+					this.kicker = 0;
 				}
 
 			}
@@ -157,12 +139,14 @@ const Hand = function(cards) {
 		else if(ranks[4]) {
 			this.type = HandType.POKER;
 			this.high = Math.max(...ranks[4]);
+			this.kicker = this.getKicker();
 		}
 
 		// Full House
 		else if(ranks[3] && ranks[2]) {
 			this.type = HandType.FULL_HOUSE;
 			this.high = Math.max(...ranks[3].concat(ranks[2]));
+			this.kicker = 0;
 		}
 
 		if(this.type >= HandType.STRAIGHT)
@@ -172,18 +156,21 @@ const Hand = function(cards) {
 		else if(ranks[3]) {
 			this.type = HandType.DRILL;
 			this.high = Math.max(...ranks[3]);
+			this.kicker = this.getKicker();
 		}
 
 		// Two Pairs
 		else if(ranks[2] && ranks[2].length >= 2) {
 			this.type = HandType.TWO_PAIRS;
 			this.high = Math.max(...ranks[2]);
+			this.kicker = this.getKicker();
 		}
 
 		// Pair
 		else if(ranks[2]) {
 			this.type = HandType.PAIR;
 			this.high = Math.max(...ranks[2]);
+			this.kicker = this.getKicker();
 		}
 
 		return this.type;
