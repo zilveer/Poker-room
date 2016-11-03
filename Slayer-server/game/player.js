@@ -6,10 +6,11 @@ module.exports = function(seat, params) {
 	this.username = params.username;
 
 	// @Interface for game/room
-	this.hand = null; //@Var game/poker/Hand
-	this.playing = false; // has the player not folded?
+	this.playing = false;
 	this.allin = false; // chips == 0
+	this.folded = false; // has the player folded?
 	this.ai = false;
+	this.hand = null; //@Var game/poker/Hand
 
 	// @Interface for game/Pot
 	this.chips = 0; // chips at hand
@@ -32,13 +33,15 @@ module.exports = function(seat, params) {
 			amount = parseInt(params.amount);
 			//@todo: raise/bet must be at least twice the amount of big blind ?
 
-		if(amount < minCall || amount > this.chips)
+		// All in
+		if(amount <= minCall && amount == this.chips) {
+			this.allin = true;
+		}
+
+		// Little naughty poker player wants to bet less than he could
+		else if(amount < minCall || amount > this.chips)
 			return false;
 
-		params.amount = amount;
-
-		if(this.chips == amount)
-			this.allin = true;
 		this.chips -= amount;
 		this.chipsInBid += amount;
 		this.chipsInPot += amount;
@@ -46,28 +49,40 @@ module.exports = function(seat, params) {
 		return true;
 	};
 
-	/*this.transferBid = function() {
-		this.chipsInPot = this.chipsInBid;
-		this.chipsInBid = 0;
-	};*/
+	// @Interface for game/room
+	this.fold = function(params) {
+		this.folded = true;
+
+		return true;
+	};
 
 	// @Interface for game/Pot.js
 	this.reset = function() {
 		this.allin = false;
+		this.folded = false;
+
 		this.chipsInPot = 0;
 		this.chipsInBid = 0;
 		this.chipsInMainPot = 0;
 		this.chipsInSidePot = 0;
-	};
 
-	this.is = function(player) {
-		return this.username == player.username;
+		this.hand = null;
+
+		if(this.chips == 0) {
+			this.playing = false;
+			this.turnId = null;
+		}
 	};
 
 	// @Interface for core/turns
 	this.turnId = seat;
+	// Returns whether the player can take a bid action
 	this.isPlaying = function() {
-		return this.turnId != null && this.chips > 0;
+		return !this.allin && !this.folded && this.turnId != null && this.chips > 0 && this.playing;
+	};
+
+	this.is = function(player) {
+		return this.username == player.username;
 	};
 
 	this.get_info = function() {

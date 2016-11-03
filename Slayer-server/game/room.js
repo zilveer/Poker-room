@@ -34,67 +34,6 @@ var Room = function(id, room_info) {
     this.minBid = this.blind;
 };
 
-Room.prototype.newTurn = function() {
-    // find next player to become dealer
-
-    //@todo: jó lesz ez így?
-    // alternative: getLast legyen next
-    var next = this.turn.getNext();
-    this.turn.setStart(next);
-    this.turn.reset();
-    // ---------------------------------------
-
-
-    this.turn.dealer = this.turn.getFromEnd(2);
-    this.turn.sblind = this.turn.getFromEnd(1);
-    this.turn.blind = this.turn.last;
-
-    // Special case for heads-up: dealer is small blind
-    if(Object.keys(this.players).length == 2)
-        this.turn.dealer = this.turn.sblind;
-
-    // Small blind
-    var SB = this.players[this.turn.sblind];
-    if(SB.bid({amount: this.sblind, type:'sblind'}, this.sblind))
-        this._bid_notify(this.turn.sblind, 'sblind', this.sblind);
-
-    // Big blind
-    this.minBid = this.blind;
-    var BB = this.players[this.turn.blind];
-    if(BB.bid({amount: this.blind, type:'blind'}, this.blind))
-        this._bid_notify(this.turn.blind, 'blind', this.blind);
-  
-    console.log('Blinds:', this.blind, this.sblind);
-
-    // Deal cards
-    this.deck = ArrayHelper.shuffle(Poker.FrenchDeck);
-    this.cardStatus = 0;
-
-    this.sendToAll('new_turn_notify', {
-        dealer: this.turn.dealer,
-        sblind: this.turn.sblind,
-        blind: this.turn.blind,
-        start: this.turn.start,
-        minBid: this.minBid
-    });
-
-    for(var player of this.turn.iterate(this.turn.sblind)) {
-        // @todo: move this to player join
-        player.hand = new Poker.Hand();
-        player.hand.set([
-            this.deck.pop(),
-            this.deck.pop()
-        ]);
-
-        this.sendTo(player.turnId, 'reveal_hand_handler', {
-            cards: player.hand.get_info()
-        });
-    }
-
-    this.status = 'bidding';
-    this.bidRequest();
-};
-
 Room.prototype.bidRequest = function() {
     var player = this.players[this.turn.current];
     console.log(player.turnId, " is bidding");
@@ -127,7 +66,6 @@ Room.prototype.call_bid = function(user_id, params) {
 };
 
 Room.prototype._bid_notify = function(player_id, type, amount) {
-
     this.sendToAll('bid_notify', {
         pot: this.pot.sumPot(),
         minBid: this.minBid,
@@ -135,6 +73,48 @@ Room.prototype._bid_notify = function(player_id, type, amount) {
         type: type,
         amount: amount
     });
+};
+
+Room.prototype.call_fold = function(user_id, params) {
+    var player = this.getPlayer(user_id);
+
+    if(!player || this.status != 'bidding' || !this.turn.isCurrent(player))
+        return this.sendErrorTo(player.turnId, 'not_in_turn');
+
+    if(!player.fold(params))
+        return this.sendErrorTo(player.turnId, 'cant_fold');
+
+    console.log(player.turnId, 'has', 'folded');
+
+    this.sendToAll('fold_notify', {
+        player_id: player.turnId,
+        show: params.show || false,
+        cards: params.show ? player.hand.get_info() : false
+    });
+    this.nextAction();
+};
+
+Room.prototype.nextAction = function() {
+    if(this.turn.isLast() && this.pot.isEqualized()) {
+        this.pot.resetBids();
+        this.minBid = 0;
+
+        if(this.cardStatus == StatusType.RIVER) {
+            // Finished turn, let's start all over again
+            this.status = 'revealing';
+            setTimeout(this.endTurn.bind(this), Delay.endTurn);
+        } else {
+            // Deal community cards
+            this.status = 'dealing';
+            setTimeout(this.dealCards.bind(this), Delay.dealCards);
+        }
+    } else {
+        // Get next player to bid
+        this.turn.fetchNext();
+
+        this.status = 'bidding';
+        setTimeout(this.bidRequest.bind(this), Delay.bidRequest);
+    }
 };
 
 Room.prototype.dealCards = function() {
@@ -193,30 +173,72 @@ Room.prototype.endTurn = function() {
         });
     }
 
-    //setTimeout(this.newTurn.bind(this), Delay.newTurn);
+    // Find next player to become dealer
+    this.turn.setStart( this.turn.getNext() );
+
+    // Reset everything
+    this.turn.reset();
+    this.pot.reset();
+    this.deck = null;
+    this.minBid = 0;
+    this.turn.dealer = null;
+    this.turn.sblind = null;
+    this.turn.blind = null;
+    this.cardStatus = 'null';
+    this.status = 'restarting';
+
+    setTimeout(this.newTurn.bind(this), Delay.newTurn);
 };
 
-Room.prototype.nextAction = function() {
-    if(this.turn.isLast() && this.pot.isEqualized()) {
-        this.pot.resetBids();
-        this.minBid = 0;
+Room.prototype.newTurn = function() {
+    this.turn.dealer = this.turn.getFromEnd(2);
+    this.turn.sblind = this.turn.getFromEnd(1);
+    this.turn.blind = this.turn.last;
 
-        if(this.cardStatus == StatusType.RIVER) {
-            // Finished turn, let's start all over again
-            this.status = 'revealing';
-            setTimeout(this.endTurn.bind(this), Delay.endTurn);
-        } else {
-            // Deal community cards
-            this.status = 'dealing';
-            setTimeout(this.dealCards.bind(this), Delay.dealCards);
-        }
-    } else {
-        // Get next player to bid
-        this.turn.fetchNext();
+    // Special case for heads-up: dealer is small blind
+    if(Object.keys(this.players).length == 2)
+        this.turn.dealer = this.turn.sblind;
 
-        this.status = 'bidding';
-        setTimeout(this.bidRequest.bind(this), Delay.bidRequest);
+    // Small blind
+    var SB = this.players[this.turn.sblind];
+    if(SB.bid({amount: this.sblind, type:'sblind'}, this.sblind))
+        this._bid_notify(this.turn.sblind, 'sblind', this.sblind);
+
+    // Big blind
+    this.minBid = this.blind;
+    var BB = this.players[this.turn.blind];
+    if(BB.bid({amount: this.blind, type:'blind'}, this.blind))
+        this._bid_notify(this.turn.blind, 'blind', this.blind);
+  
+    console.log('Blinds:', this.blind, this.sblind);
+
+    // Deal cards
+    this.deck = ArrayHelper.shuffle(Poker.FrenchDeck);
+    this.cardStatus = 0;
+
+    this.sendToAll('new_turn_notify', {
+        dealer: this.turn.dealer,
+        sblind: this.turn.sblind,
+        blind: this.turn.blind,
+        start: this.turn.start,
+        minBid: this.minBid
+    });
+
+    for(var player of this.turn.iterate(this.turn.sblind)) {
+        // @todo: move this to player join
+        player.hand = new Poker.Hand();
+        player.hand.set([
+            this.deck.pop(),
+            this.deck.pop()
+        ]);
+
+        this.sendTo(player.turnId, 'reveal_hand_handler', {
+            cards: player.hand.get_info()
+        });
     }
+
+    this.status = 'bidding';
+    this.bidRequest();
 };
 
 Room.prototype.call_chat_message = function(user_id, params) {
@@ -281,10 +303,6 @@ Room.prototype.call_join_room = function(user_id, params) {
 };
 
 Room.prototype.call_leave_room = function(user_id, params) {
-
-};
-
-Room.prototype.call_leave_seat = function(user_id, params) {
 
 };
 

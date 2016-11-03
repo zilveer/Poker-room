@@ -23,11 +23,8 @@ module.exports = {
 		if(!this.test_blinds())
 			return;
 
-		//if(!this.test_seats())
-		//	return;
-
-		//if(!this.test_timeout())
-		//	return;
+		if(!this.test_folds())
+			return;
 
 		console.log('All ' + this.passed + ' Turn tests PASSED!');
 	},
@@ -106,6 +103,37 @@ module.exports = {
 			return false;
 		return true;
 	},
+
+	test_folds: function() {
+		this.init(6);
+		this.room.players[2].folded = true;
+
+		if(!this.check(0, 1, null, 0, 5))
+			return false;
+		/*
+		this.passed++;
+		this.room.turn.fetchNext();
+
+		if(!this.check(1, 2, 0, 0, 5))
+			return false;
+
+		this.room.turn.fetchNext();
+		this.room.turn.fetchNext();
+		this.room.turn.fetchNext();
+		this.room.turn.fetchNext();
+
+		if(!this.check(5, 0, 4, 0, 5))
+			return false;
+
+		this.passed++;
+
+		this.room.turn.fetchNext();
+
+		if(!this.check(0, 1, 5, 0, 5))
+			return false;
+		return true;*/
+	},
+
 
 	test_new_turns: function() {
 		// current: 2, previous: 0
