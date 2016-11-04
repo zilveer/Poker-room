@@ -1,46 +1,104 @@
 
 .ptable {
+	position: relative;
+	top: 190px;
     width: @ptable-width;
     height: @ptable-height;
-
-    margin: 0 auto 0;
-    margin-top: 100px;
+    margin: 0 auto;
 	background-color:#056b00;
-    border-radius: round(@ptable-width * 0.50);
-    border: solid 0px black;
+    border-radius: round(@ptable-width * 0.5);
 }
 
-
 .mixin-loop (@i) when (@i > 0) {
-  .ptable-player:nth-child(@{i}) {
+  .ptable .chips:nth-child(@{i}) {
 	position: relative;
 
 	left: cos(@i * 45deg) * @ptable-radius-width + @ptable-profile-position-x;
 
 	top: sin(@i * 45deg) * @ptable-radius-height + @ptable-profile-position-y;
 
-	margin-top: -@ptable-profile-width;
-	/*background: red;*/
-	padding: 8px;
-	border: solid 1px black;
-	border-radius: 12px;
-
-	width: @ptable-profile-width;
-	height: @ptable-profile-width;
-	z-index: @i;
-  }
-  .mixin-loop(@i - 1);
-}
-
-.mixin-loop(8);
-
-.ptable-player .profile {
-	background: #bada55;
+	margin-top: -@ptable-profile-height;
 	width: 100%;
 	height: 100%;
+	color: white;
+	text-align: center;
 
-	/*
-	$$$ itt, @todo: username text & tokens & cards
-	wrapper
-	*/
+	width: @ptable-profile-width;
+	height: @ptable-profile-height;
+    z-index: 1;
+  }
+
+  .players .player-top:nth-child(@{i}) {
+	position: relative;
+	left: cos((@i+3) * 45deg) * @ptable-radius-width*1.35 + @ptable-profile-position-x + 10px;
+	margin-top: -100px;
+	top: sin((@i+3) * 45deg) * @ptable-radius-height*1.5 + @ptable-profile-position-y + 220px;
+  }
+
+  .mixin-loop(@i - 1);
+}
+.mixin-loop(8);
+
+.ptable .chips.left {
+	text-align: left;
+}
+.ptable .chips.right {
+	text-align: right;
+}
+.ptable .chips.bottom {
+	line-height: @ptable-profile-height - @ptable-profile-font;
+}
+.ptable .chips.top {
+	line-height: @ptable-profile-font;
+}
+.ptable .chips.left.side {
+	padding-left: @ptable-profile-font;
+}
+.ptable .chips.right.side {
+	padding-right: @ptable-profile-font;
+}
+
+
+.players {
+	width: @ptable-width;
+	height: 100px;
+	margin: 0 auto;
+}
+
+.player {
+	z-index: 1000;
+    height: 100px;
+    width: 100px;
+	text-align: center;
+}
+
+.player .profile {
+	background: #bada55;
+	border: solid 3px black;
+	border-radius: 60px 60px 0 0;
+	width: 85px;
+	height: 85px;
+}
+.player .username, .player .chips {
+	position: relative;
+	bottom: 10px;
+    text-align: center;
+	overflow: hidden;
+}
+.player .username {
+	background: black;
+	height: 20px;
+	line-height: 18px;
+	color: white;
+	font-size: 14px;
+	font: helvetica;
+	border-radius: 15px 15px 0 0;	
+}
+.player .chips {
+	height: 16px;
+	background: orange;
+	line-height: 14px;
+	font-size: 11px;
+	font: arial;
+	border-radius: 0 0 15px 15px;
 }
