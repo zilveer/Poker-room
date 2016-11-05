@@ -182,6 +182,14 @@ const Hand = function(cards) {
 	this.get_info = function() {
 		return this.cards;
 	};
+
+	this.toString = function() {
+		var str = '';
+		for(var c in this.cards) {
+			str += this.cards[c].type + '/' +  this.cards[c].rank + '; ';
+		}
+		return str;
+	};
 };
 
 

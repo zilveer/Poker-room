@@ -7,6 +7,14 @@
     margin: 0 auto;
 	background-color:#056b00;
     border-radius: round(@ptable-width * 0.5);
+    margin-bottom: 200px;
+	box-shadow: inset 0px 0px 10px 5px #000;
+}
+.table-center {
+	margin: 0 auto;
+	margin-top: (@ptable-height/2) - 100px;
+	width: @scard-width*5 + 50px;
+	height: 130px;
 }
 
 .mixin-loop (@i) when (@i > 0) {
@@ -14,7 +22,6 @@
 	position: relative;
 
 	left: cos(@i * 45deg) * @ptable-radius-width + @ptable-profile-position-x;
-
 	top: sin(@i * 45deg) * @ptable-radius-height + @ptable-profile-position-y;
 
 	margin-top: -@ptable-profile-height;

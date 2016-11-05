@@ -18,6 +18,7 @@ module.exports = {
 			player.ai = AI.createSimpleton(player);
 			player.username = "bot " + p;
 			player.user_id = -p -1;
+			player.playing = true;
 			player.chips = 100000;
 		}
 	},

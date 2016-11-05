@@ -142,19 +142,40 @@ Room.prototype.dealCards = function() {
 
 Room.prototype.endTurn = function() {
     var hands = [];
+    var whands = {};
     for(var p in this.players) {
+        if(this.players[p].folded) continue;
+        var hand = this.cards.merge(this.players[p].hand)
+
         hands.push({
             player_id: p,
-            hand: this.cards.merge(this.players[p].hand),
+            hand: hand,
         });
+        whands[p] = this.players[p].hand.get_info();
     }
+
     var winners = Poker.getBestHands(hands);
     var win_amount = 0;
 
-    console.log('Winners:', winners, win_amount);
+    this.sendToAll('winner_notify', {
+        winner: winners[0],
+        win_amount: win_amount,
+        hands: whands
+    });
+
+
+    for(var player of hands) {
+        console.log(player.player_id, ':', player.hand.type, player.hand.high, player.hand.kicker, '--', player.hand.toString());
+    }
+
+    console.log('Winner:');
+    var player = winners[0];
+    console.log(player.player_id, ':', player.hand.type, player.hand.high, player.hand.kicker, '--', player.hand.toString());
+
+
     console.log('New turn should be requested');
 
-    if(winners.length == 1) {
+    /*if(winners.length == 1) {
         win_amount = this.pot.rewardWinner(winners[0].player_id);
 
         this.sendToAll('winner_notify', {
@@ -188,6 +209,7 @@ Room.prototype.endTurn = function() {
     this.status = 'restarting';
 
     setTimeout(this.newTurn.bind(this), Delay.newTurn);
+    /**/
 };
 
 Room.prototype.newTurn = function() {
@@ -296,7 +318,7 @@ Room.prototype.call_join_room = function(user_id, params) {
         // (re)start the room
         if(this.status == 'waiting') {
             this.status = 'starting';
-            this.turn.init();
+            this.turn.init(0);
             setTimeout(this.newTurn.bind(this), Delay.newTurn);
         }
     }

@@ -21,16 +21,20 @@ module.exports = function(seat, params) {
 
 	// @Interface for game/room
 	this.bid = function(params, minBid) {
+		if(this.folded || !this.playing)
+			return false;
+
 		var minCall = minBid - this.chipsInBid;
 		var amount = 0;
 		var type = params.type;
+		params.amount = parseInt(params.amount);
 
 		if(params.type == 'check')
 			amount = 0;
 		else if(params.type == 'call')
 			amount = minCall;
 		else // raise, bet, sblind, blind
-			amount = parseInt(params.amount);
+			amount = params.amount;
 			//@todo: raise/bet must be at least twice the amount of big blind ?
 
 		// All in

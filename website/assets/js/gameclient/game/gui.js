@@ -24,13 +24,15 @@ var GameGUI = {
 	},
 
 	update_table: function() {
-		$('#pot').text(Game.room.pot + '$');
+		$('#pot').text(Game.room.pot);
 	},
 
 	update_player: function(p) {
-		$('.player[player-id="'+p+'"] .name').text(Game.room.players[p].username);
-		$('.player[player-id="'+p+'"] .chips').text(Game.room.players[p].chips + '$');
-		$('.player[player-id="'+p+'"] .bid').text(Game.room.players[p].chipsInBid + '$');
+		$('[seat="'+p+'"').show();
+		$('.players .player[seat="'+p+'"] [data-name="username"]').text(Game.room.players[p].username);
+		$('.players .player[seat="'+p+'"] [data-name="chips"]').text(Game.room.players[p].chips);
+
+		$('.ptable .chips[seat="'+p+'"] [data-name="chips"]').text(Game.room.players[p].chipsInBid);
 
 		if(Game.room.turn.dealer == p)
 			$('.player[player-id="'+p+'"] .role').text('D');

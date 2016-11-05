@@ -7,11 +7,20 @@ var GameGraphics = {
 		if(this.ranks[rank])
 			return this.ranks[rank]
 		return rank;
-	}
+	},
 
 	setup: function() {
 		GameGraphics.update_cards();
 		GameGraphics.update_hand();
+	},
+
+	show_hands: function(hands) {
+		for(var h in hands) {
+			this._render_pack(
+				'.players .player[seat="'+h+'"] [data-name="cards"]', 
+				hands[h]
+			);
+		}
 	},
 
 	update_cards: function() {

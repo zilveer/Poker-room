@@ -50,7 +50,7 @@ module.exports = function(players) {
 		return sum;
 	},
 
-	this.resetPot = function() {
+	this.reset = function() {
 		for(var p in this.players) {
 			this.players[p].reset();
 		}

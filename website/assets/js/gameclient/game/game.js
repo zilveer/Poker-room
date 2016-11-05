@@ -22,8 +22,13 @@ var Game = {
 
 	// Blinds and betting
 	bid_notify: function(params) {
+		if(params.type == 'check')
+			params.amount = 0;
+		params.amount = parseInt(params.amount);
+
 		Game.room.pot = params.pot;
 		Game.room.minBid = params.minBid;
+
 		Game.room.players[params.player_id].chips -= params.amount;
 		Game.room.players[params.player_id].chipsInBid += params.amount;
 		Game.room.players[params.player_id].chipsInPot += params.amount;
@@ -68,6 +73,11 @@ var Game = {
 	reveal_hand_handler: function(params) {
 		Game.room.hand = params.cards;
 		GameGraphics.update_hand();
+	},
+
+	winner_notify: function(params) {
+		
+		GameGraphics.show_hands(params.hands);
 	},
 
 	join_room_notify: function(player) {
